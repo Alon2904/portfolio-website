@@ -1,21 +1,29 @@
-// app/layout.tsx
-import type { Metadata } from "next";
 import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "Alon - Cohen | Full-Stack Developer",
-  // description: "Track your mood, every day.",
-};
+import { poppins } from "@/utils/fonts";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
+import Head from "next/head";
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="en">
-      <body className="w-full text-sm sm:text-base min-h-screen flex flex-col text-slate-800">
-        {children}
+    <html>
+      <Head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+        <title>Yuval Shalom&apos;s Portfolio</title>{" "}
+        {/* Escaped the single quote */}
+        <meta name="description" content="Alon's Portfolio" />
+      </Head>
+      <body className={poppins.className}>
+        <main className="flex flex-col md:flex-row relative">
+          <section className="md:w-7/12 flex flex-col">
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </section>
+        </main>
       </body>
     </html>
   );
