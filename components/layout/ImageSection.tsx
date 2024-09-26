@@ -5,7 +5,7 @@ import { SocialIcon } from "@/components/layout/SocialIcon";
 import { Toaster, toast } from "react-hot-toast";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 import { socialItems } from "@/utils/socialItems";
-import AnimatedSection from "./AnimatedSection";
+import AnimatedSection from "@/components/layout/AnimatedSection";
 
 const ImageSection = () => {
   const iconsStyle =
