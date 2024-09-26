@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import { SocialIcon } from "../SocialIcon";
+import { SocialIcon } from "@/components/layout/SocialIcon";
 import { Toaster, toast } from "react-hot-toast";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 import { socialItems } from "@/utils/socialItems";
