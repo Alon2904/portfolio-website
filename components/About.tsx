@@ -2,7 +2,7 @@ import React from "react";
 import { aboutMe } from "@/utils/aboutMe";
 import { playfair } from "@/utils/fonts";
 import { techStack } from "@/utils/techStack";
-import TechIcon from "@/components/stackIcon";
+import TechIcon from "@/components/StackIcon";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 import AnimatedSection from "./layout/AnimatedSection";
 import { FaChevronDown } from "react-icons/fa";
