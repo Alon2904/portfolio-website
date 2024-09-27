@@ -7,12 +7,7 @@
   --foreground: #000000; /* Light mode text color */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #000000; /* Dark mode background color */
-    --foreground: #ffffff; /* Dark mode text color */
-  }
-}
+
 
 body {
   color: var(--foreground);
