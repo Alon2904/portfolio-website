@@ -24,7 +24,7 @@ const ImageSection = () => {
       </AnimatedSection>
       <AnimatedSection className="flex items-center justify-center">
         <Image
-          className="md:sticky object-cover rounded-full overflow-hidden w-[65%] aspect-square md:w-56 lg:w-80 drop-shadow-2xl shadow-slate-400 md:hover:border-2 md:hover:border-sky-700 md:transition-all md:duration-200 md:hover:scale-105 z-10"
+          className="md:sticky object-cover rounded-full overflow-hidden w-[65%] aspect-square md:w-56 lg:w-80 drop-shadow-2xl shadow-white md:hover:border-2 md:hover:border-white md:transition-all md:duration-200 md:hover:scale-105 z-10 shadow-lg sm:shadow-2xl"
           src="/images/profile-photo1.jpg"
           alt="Profile Picture"
           width={800}
