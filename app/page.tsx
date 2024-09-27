@@ -1,6 +1,5 @@
 // app/page.tsx
 import React from 'react';
-import Main from "@/components/Main";
 import Hero from "@/components/Hero";
 import About from '@/components/About';
 import Projects from '@/components/Projects';

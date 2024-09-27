@@ -2,7 +2,6 @@
 import Image from "next/image";
 import React from "react";
 import { SocialIcon } from "@/components/layout/SocialIcon";
-import { Toaster, toast } from "react-hot-toast";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 import { socialItems } from "@/utils/socialItems";
 import AnimatedSection from "@/components/layout/AnimatedSection";
@@ -12,7 +11,7 @@ const ImageSection = () => {
     "text-white text-4xl md:text-3xl transform transition-transform duration-300 md:hover:scale-125 md:hover:rotate-12 md:hover:-translate-x-2";
 
   return (
-    <section className="relative w-screen h-[50vh] flex flex-col md:flex-row md:fixed md:right-0 md:top-0 md:h-full items-center justify-center bg-primary md:w-5/12">
+    <section className="relative w-screen h-[50vh] flex flex-col md:flex-row md:fixed md:right-0 md:top-0 md:h-full items-center justify-center bg-black md:w-5/12">
       <AnimatedSection className="flex md:flex-col gap-4 mb-8 md:mb-0 md:fixed md:right-0 transform md:-translate-y-1/2 md:pr-4 xl:pr-8 2xl:pr-12">
         {socialItems.map(({ link, icon }) => (
           <SocialIcon
@@ -25,17 +24,6 @@ const ImageSection = () => {
       </AnimatedSection>
       <AnimatedSection className="flex items-center justify-center">
         <Image
-          onClick={() =>
-            toast(`I Know I'm cute but don't push me`, {
-              icon: "🤪",
-              duration: 2500,
-              style: {
-                border: "1px solid #65C3C7",
-                padding: "12px",
-                color: "#65C3C7",
-              },
-            })
-          }
           className="md:sticky object-cover rounded-full overflow-hidden w-[65%] aspect-square md:w-56 lg:w-80 drop-shadow-2xl shadow-slate-400 md:hover:border-2 md:hover:border-sky-700 md:transition-all md:duration-200 md:hover:scale-105 z-10"
           src="/assets/images/profile-picture.jpg"
           alt="Profile Picture"
@@ -44,7 +32,6 @@ const ImageSection = () => {
         />
       </AnimatedSection>
 
-      <Toaster />
     </section>
   );
 };

@@ -14,7 +14,7 @@ export default function RootLayout({
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <title>Yuval Shalom&apos;s Portfolio</title>{" "}
+        <title>Alon Cohen&apos;s Portfolio</title>{" "}
         {/* Escaped the single quote */}
         <meta name="description" content="Alon's Portfolio" />
       </Head>
