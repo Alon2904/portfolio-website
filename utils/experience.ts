@@ -11,21 +11,21 @@ export const experience = [
       ],
     },
     {
+        date: "Feb 2023 – Mar 2023",
+        company: "Firebrand",
+        position: "Software Engineer – Python Bootcamp",
+        description: [
+          "Software development and deployment with a focus on Python.",
+          "Obtained the Microsoft Azure Fundamentals (AZ-900) certification, showcasing foundational knowledge of cloud concepts and Azure services."
+        ],
+      },
+    {
       date: "March 2018 – March 2022",
       company: "ELAL Security – Germany, Berlin",
       position: "Aviation Security Officer/Software Engineer",
       description: [
         "Developed a Golang application that revolutionized work processes, leading to its adoption across multiple European ELAL Airlines locations and significantly improving operational efficiency."
       ],
-    },
-    {
-      date: "November 2013 – November 2016",
-      company: "Israel Defense Force",
-      position: "Communication Systems Technician",
-      description: [
-        "Managed the establishment of communication rooms for operational bases in the field and provided technical support for encrypted radio devices.",
-        "Led a team of 10 soldiers in achieving operational readiness."
-      ],
-    },
+    }
   ];
   
