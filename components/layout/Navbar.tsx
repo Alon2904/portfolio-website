@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { playfair } from "@/utils/fonts";
-import { Link as ScrollLink } from "react-scroll";
+import { Link as ScrollLink, scroller } from "react-scroll";
 import { CgMenuRight, CgClose } from "react-icons/cg";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -16,10 +16,31 @@ const links = [
 ];
 
 const NavBar = () => {
-  const [isSelected, setIsSelected] = useState("Home");
+  const [isSelected, setIsSelected] = useState(
+    localStorage.getItem("lastSection") || "Home"
+  );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  useEffect(() => {
+    // Disable browser's native scroll restoration
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
+    // Scroll to the last saved section manually
+    scroller.scrollTo(isSelected, {
+      smooth: true,
+      duration: 500,
+      offset: -70,
+    });
+  }, [isSelected]);
+
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+
+  const handleSetActive = (label: string) => {
+    setIsSelected(label);
+    localStorage.setItem("lastSection", label);
+  };
 
   return (
     <nav className="sticky navbar top-0 w-screen md:w-full flex justify-between items-center py-4 px-8 bg-white z-50">
@@ -38,7 +59,8 @@ const NavBar = () => {
             className={`text-gray-500 hover:text-gray-600 cursor-pointer ${
               label === isSelected && "text-primary font-bold"
             }`}
-            onSetActive={() => setIsSelected(label)}>
+            onSetActive={() => handleSetActive(label)}
+          >
             {label}
           </ScrollLink>
         ))}
@@ -51,10 +73,11 @@ const NavBar = () => {
               initial={{ opacity: 0, rotate: -90 }}
               animate={{ opacity: 1, rotate: 0 }}
               exit={{ opacity: 0, rotate: 90 }}
-              transition={{ duration: 0.2 }}>
-                <span className="text-2xl cursor-pointer" onClick={toggleMenu}>
-              <CgClose/>
-                </span>
+              transition={{ duration: 0.2 }}
+            >
+              <span className="text-2xl cursor-pointer" onClick={toggleMenu}>
+                <CgClose />
+              </span>
             </motion.div>
           ) : (
             <motion.div
@@ -62,10 +85,11 @@ const NavBar = () => {
               initial={{ opacity: 0, rotate: 90 }}
               animate={{ opacity: 1, rotate: 0 }}
               exit={{ opacity: 0, rotate: -90 }}
-              transition={{ duration: 0.2 }}>
-                <span className="text-2xl cursor-pointer" onClick={toggleMenu}>
-              <CgMenuRight/>
-                </span>
+              transition={{ duration: 0.2 }}
+            >
+              <span className="text-2xl cursor-pointer" onClick={toggleMenu}>
+                <CgMenuRight />
+              </span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -77,7 +101,8 @@ const NavBar = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
-          className={`md:hidden fixed inset-0 bg-base-100 flex flex-col gap-6 items-center justify-center z-40 ${playfair.className}`}>
+          className={`md:hidden fixed inset-0 bg-base-100 flex flex-col gap-6 items-center justify-center z-40 ${playfair.className}`}
+        >
           {links.map(({ href, label }) => (
             <ScrollLink
               key={label}
@@ -91,8 +116,9 @@ const NavBar = () => {
                   ? "font-bold text-primary"
                   : "text-primary-content"
               }`}
-              onSetActive={() => setIsSelected(label)}
-              onClick={toggleMenu}>
+              onSetActive={() => handleSetActive(label)}
+              onClick={toggleMenu}
+            >
               {label}
             </ScrollLink>
           ))}
