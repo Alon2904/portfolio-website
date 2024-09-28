@@ -17,7 +17,7 @@ const Experience = () => {
       </h1>
       <div className="relative">
         {/* Vertical Line */}
-        <div className="absolute left-2.5 top-0 w-1 bg-black h-full hidden md:block"></div>
+        <div className="absolute left-2.5 top-0 w-1 bg-black h-full "></div>
         <ul className="space-y-8">
           {experience.map((exp, index) => (
             <li key={index} className="flex items-start relative">
