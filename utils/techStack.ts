@@ -1,66 +1,89 @@
+// utils/techStack.js
+import {
+  FaJsSquare,
+  FaReact,
+  FaNodeJs,
+  FaAws,
+  FaDocker,
+  FaGitAlt,
+  FaJava,
+  FaPython,
+  FaDatabase,
+} from 'react-icons/fa';
+
+import {
+  SiTypescript,
+  SiCsharp,
+  SiC,
+  SiPostgresql,
+  SiMicrosoftazure,
+  SiAmazondynamodb,
+  SiExpress,
+} from 'react-icons/si';
+
 export const techStack = [
   {
-    iconName: "js-square",
+    Icon: FaJsSquare,
     name: "JavaScript",
   },
   {
-    iconName: "typescript",
+    Icon: SiTypescript,
     name: "TypeScript",
   },
   {
-    iconName: "react",
+    Icon: FaReact,
     name: "React",
   },
   {
-    iconName: "node-js",
+    Icon: FaNodeJs,
     name: "Node.js",
   },
   {
-    iconName: "aws",
+    Icon: FaAws,
     name: "AWS",
   },
   {
-    iconName: "docker",
+    Icon: FaDocker,
     name: "Docker",
   },
   {
-    iconName: "git-alt",
+    Icon: FaGitAlt,
     name: "Git",
   },
   {
-    iconName: "java",
+    Icon: FaJava,
     name: "Java",
   },
   {
-    iconName: "csharp",
+    Icon: SiCsharp,
     name: "C#",
   },
   {
-    iconName: "python",
+    Icon: FaPython,
     name: "Python",
   },
   {
-    iconName: "cuttlefish",
+    Icon: SiC,
     name: "C",
   },
   {
-    iconName: "database",
+    Icon: FaDatabase,
     name: "SQL",
   },
   {
-    iconName: "database",
+    Icon: SiPostgresql,
     name: "PostgreSQL",
   },
   {
-    iconName: "cloud",
+    Icon: SiMicrosoftazure,
     name: "Azure",
   },
   {
-    iconName: "dynamo",
+    Icon: SiAmazondynamodb,
     name: "DynamoDB",
   },
   {
-    iconName: "server",
+    Icon: SiExpress,
     name: "Express.js",
   },
 ];
