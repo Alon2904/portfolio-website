@@ -1,3 +1,4 @@
+// components/NavBar.jsx
 "use client";
 
 import Link from "next/link";
@@ -16,11 +17,11 @@ const links = [
 ];
 
 const NavBar = () => {
-  const [isSelected, setIsSelected] = useState(
-    localStorage.getItem("lastSection") || "Home"
-  );
+  const [isSelected, setIsSelected] = useState("Home");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  /*
+  // Remove the useEffect hook to prevent double scrolling
   useEffect(() => {
     // Disable browser's native scroll restoration
     if ("scrollRestoration" in history) {
@@ -34,6 +35,7 @@ const NavBar = () => {
       offset: -70,
     });
   }, [isSelected]);
+  */
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
@@ -43,7 +45,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="sticky navbar top-0 w-screen md:w-full flex justify-between items-center py-4 px-8 bg-white z-50">
+    <nav className="sticky top-0 w-screen md:w-full flex justify-between items-center py-4 px-8 bg-white z-50 shadow-md">
       <Link href="/" className={playfair.className}>
         Alon Cohen;
       </Link>
@@ -55,7 +57,7 @@ const NavBar = () => {
             smooth={true}
             duration={500}
             spy={true}
-            offset={-70}
+            offset={-80} // Adjusted to match scroll-mt-20 (5rem = 80px)
             className={`text-gray-500 hover:text-gray-600 cursor-pointer ${
               label === isSelected && "text-primary font-bold"
             }`}
@@ -110,7 +112,7 @@ const NavBar = () => {
               smooth={true}
               duration={500}
               spy={true}
-              offset={-70}
+              offset={-80} // Adjusted offset
               className={`text-5xl ${
                 label === isSelected
                   ? "font-bold text-primary"
