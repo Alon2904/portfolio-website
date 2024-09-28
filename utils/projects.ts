@@ -1,18 +1,24 @@
-export const projects = [
+// src/data/projectsData.ts
+
+import { Project } from "@/types/project";
+
+export const projects: Project[] = [
   {
     id: "1",
     title: "Moodly",
     description:
-      "Developed a full-stack web application using React, Next.js, and TailwindCSS. Implemented a user-friendly interface for tracking mood changes. Integrated Firebase for user authentication and data storage, and deployed on Vercel.",
+      "Developed a full-stack web application using React, Next.js, and TailwindCSS. Implemented a user-friendly interface for tracking mood changes. Integrated Firebase for user authentication and data storage, and deployed on Netlify.",
+    imageUrl: '/Images/moodly/1.png', // Ensure this image exists at public/assets/images/moodly/1.jpg
+    projectUrl: "https://moodly.pro",
+    githubUrl: "https://github.com/alon2904/moodly",
     tags: [
       "Next.js",
       "TailwindCSS",
       "Firebase",
       "React",
       "TypeScript",
-      "Vercel",
+      "Netlify",
     ],
-    url: "https://moodly.pro",
     projectPage: {
       title: "Moodly",
       description:
@@ -36,45 +42,48 @@ export const projects = [
             "<strong>TailwindCSS:</strong> To create a modern, responsive design.",
             "<strong>Firebase:</strong> For authentication, Firestore as a real-time database, and storage solutions.",
             "<strong>TypeScript:</strong> Ensured robust type safety and code reliability.",
-            "<strong>Vercel:</strong> For deployment and hosting, ensuring fast and secure delivery of the application.",
+            "<strong>Netlify:</strong> For deployment and hosting, ensuring fast and secure delivery of the application.",
           ],
         },
       ],
       images: [
         {
-          src: "/assets/images/moodly/1.jpg",
+          src: "/Images/moodly/1.png", // Ensure this image exists at public/assets/images/moodly/1.png
           alt: "Mood Tracking Interface",
         },
         {
-          src: "/assets/images/moodly/2.jpg",
+          src: "/Images/moodly/1.png", // Ensure this image exists at public/assets/images/moodly/1.png
           alt: "User Authentication Screen",
         },
         {
-          src: "/assets/images/moodly/3.jpg",
+          src: "/Images/moodly/1.png", // Ensure this image exists at public/assets/images/moodly/1.png
           alt: "Data Visualization of Moods",
         },
         {
-          src: "/assets/images/moodly/4.jpg",
+          src: "/Images/moodly/1.png", // Ensure this image exists at public/assets/images/moodly/1.png
           alt: "Responsive Design on Mobile",
         },
       ],
     },
   },
-
   {
-    id: 2,
-    title: "this website",
+    id: "2",
+    title: "This Website",
     description:
-      "Built a personal portfolio website using Next.js, Tailwind CSS, and TypeScript",
-    tags: ["Next.js", "Tailwind CSS", "TypeScript"],
+      "Built a personal portfolio website using Next.js, Tailwind CSS, and TypeScript.",
+    imageUrl: "", // Ensure this image exists at public/assets/images/portfolio-website.jpg
+    projectUrl: "https://alon2904.github.io/portfolio-website",
     githubUrl: "https://github.com/alon2904/portfolio-website",
+    tags: ["Next.js", "Tailwind CSS", "TypeScript"],
   },
-
   {
-    id: 3, // Assuming the next ID in sequence is 4
+    id: "3",
     title: "Serverless Quotes API",
     description:
       "Developed a scalable, serverless API for managing project-based quotes using AWS services. The API allows users to create, retrieve, update, and delete quotes associated with projects, with a robust architecture leveraging AWS Lambda, DynamoDB, and the Serverless Framework.",
+    imageUrl: "/Images/serverless-quotes/1.jpg", // Ensure this image exists at public/assets/images/serverless-quotes/1.jpg
+    projectUrl: "https://serverless-quotes-api.com",
+    githubUrl: "https://github.com/alon2904/serverless-quotes-api",
     tags: [
       "AWS Lambda",
       "DynamoDB",
@@ -109,15 +118,36 @@ export const projects = [
           ],
         },
       ],
+      images: [
+        {
+          src: "/Images/moodly/1.png", // Ensure this image exists at public/assets/images/moodly/1.png
+          alt: "API Endpoint Overview",
+        },
+        {
+          src: "/Images/moodly/1.png", // Ensure this image exists at public/assets/images/moodly/1.png
+          alt: "Lambda Function Code",
+        },
+        {
+          src: "/Images/moodly/1.png", // Ensure this image exists at public/assets/images/moodly/1.png
+          alt: "DynamoDB Table Structure",
+        },
+        {
+          src: "/Images/moodly/1.png", // Ensure this image exists at public/assets/images/moodly/1.png
+          alt: "API Gateway Configuration",
+        },
+      ],
     },
   },
-
   {
+    id: "4",
     title: "AlonCohenFood",
     description:
       "Food catering website made with React and 'styled-components'.",
-    url: "https://alon2904.github.io/AlonCohenFood/",
-    details:
-      "This is a frontend-only website built with React and JavaScript. The styling is handled using styled-components, and the site is deployed to GitHub Pages.",
+    imageUrl: "/Images/moodly/1.png",
+    projectUrl: "https://alon2904.github.io/AlonCohenFood/",
+    githubUrl: "https://github.com/alon2904/AlonCohenFood",
+    tags: ["React", "Styled-Components", "JavaScript", "GitHub Pages"],
+
+    
   },
 ];
