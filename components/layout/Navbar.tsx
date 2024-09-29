@@ -59,7 +59,7 @@ const NavBar = () => {
             spy={true}
             offset={-80} // Adjusted to match scroll-mt-20 (5rem = 80px)
             className={`text-gray-500 hover:text-gray-600 cursor-pointer ${
-              label === isSelected && "text-primary font-bold"
+              label === isSelected && "text-primary font-bold border-b-2 border-primary"
             }`}
             onSetActive={() => handleSetActive(label)}
           >

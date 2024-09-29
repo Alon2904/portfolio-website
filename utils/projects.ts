@@ -71,7 +71,7 @@ export const projects: Project[] = [
         title: "This Website",
         description:
           "Built a personal portfolio website using Next.js, Tailwind CSS, and TypeScript. Deployed on Netlify.",
-        imageUrl: "", // Ensure this image exists at public/assets/images/portfolio-website.jpg
+        imageUrl: "/Images/ThisWebsite/1.png", // Ensure this image exists at public/assets/images/portfolio-website.jpg
     projectUrl: "https://alon2904.github.io/portfolio-website",
     githubUrl: "https://github.com/alon2904/portfolio-website",
     tags: ["Next.js", "Tailwind CSS", "TypeScript", "Netlify"],
