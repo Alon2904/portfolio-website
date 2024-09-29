@@ -2,7 +2,7 @@
 "use client";
 import React, { useState } from "react";
 import { contactInfo } from "@/utils/contact";
-import { playfair } from "@/utils/fonts";
+import { sourceCode } from "@/utils/fonts";
 import AnimatedSection from "./layout/AnimatedSection";
 import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 import { FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
@@ -78,7 +78,7 @@ const Contact: React.FC = () => {
       id="contact"
     >
       <h1
-        className={`text-5xl md:text-6xl font-bold mb-8 ${playfair.className}`}
+        className={`text-5xl md:text-6xl font-bold mb-8 ${sourceCode.className}`}
       >
         Contact Me.
       </h1>
@@ -97,15 +97,7 @@ const Contact: React.FC = () => {
                 {contactInfo.email}
               </a>
             </li>
-            <li className="flex items-center">
-              <FaPhone className="text-primary mr-3" />
-              <a
-                href={`tel:${contactInfo.phone}`}
-                className="text-gray-700 hover:text-primary transition-colors"
-              >
-                {contactInfo.phone}
-              </a>
-            </li>
+    
             <li className="flex items-center">
               <FaMapMarkerAlt className="text-primary mr-3" />
               <span className="text-gray-700">{contactInfo.address}</span>
@@ -170,7 +162,7 @@ const Contact: React.FC = () => {
               <textarea
                 id="message"
                 name="message"
-                rows={5}
+                rows={3}
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 value={formData.message}
                 onChange={handleChange}
