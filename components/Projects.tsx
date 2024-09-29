@@ -11,8 +11,8 @@ import ProjectCard from "./ProjectCard";
 const Projects: React.FC = () => (
   <section id="projects" className="py-10 bg-white">
     <AnimatedSection className="container mx-auto px-4">
-      <h2 className={`text-5xl md:text-6xl font-bold text-center mb-12 ${playfair.className}`}>
-        My Projects
+      <h2 className={`text-5xl md:text-6xl font-bold text-start mb-12 ${playfair.className}`}>
+        Projects.
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 items-stretch">
         {projects.map((project) => (

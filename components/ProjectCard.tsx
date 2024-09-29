@@ -7,25 +7,41 @@ import { FaExternalLinkAlt, FaGithub } from "react-icons/fa";
 import Image from "next/image";
 import { Project } from "@/types/project";
 import { playfair } from "@/utils/fonts";
+import { useRouter } from 'next/navigation'; // For Next.js 13+
+ // If you're using Next.js 12 or below, use 'next/router' instead
 
 interface ProjectCardProps {
   project: Project;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+  const hasProjectPage = Boolean(project.projectPage);
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    if (hasProjectPage) {
+      router.push(`/projects/${project.id}`);
+    }
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-lg flex flex-col overflow-hidden transition-transform transform hover:scale-105 h-full">
+    <div
+      className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden transition-transform transform hover:scale-105 h-full ${
+        hasProjectPage ? 'cursor-pointer' : 'cursor-default'
+      }`}
+      onClick={handleCardClick}
+    >
       {/* Project Image */}
       {project.imageUrl && (
-        <a href={project.projectUrl || project.githubUrl || "#"} target="_blank" rel="noopener noreferrer">
+        <div className="relative w-full h-48">
           <Image
             src={project.imageUrl}
             alt={project.title}
-            width={800}
-            height={400}
+            fill
+            style={{ objectFit: 'cover' }}
             className="object-cover w-full h-auto"
           />
-        </a>
+        </div>
       )}
       {/* Project Content */}
       <div className="p-6 flex flex-col flex-grow">
@@ -49,6 +65,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
               href={project.projectUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()} // Prevent card navigation
               className="flex items-center text-blue-500 hover:text-blue-700 font-semibold"
             >
               View Project <FaExternalLinkAlt className="ml-2" />
@@ -59,6 +76,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()} // Prevent card navigation
               className="flex items-center text-gray-800 hover:text-gray-600 font-semibold"
             >
               <FaGithub className="mr-2" /> GitHub

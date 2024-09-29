@@ -61,28 +61,28 @@ export const projects: Project[] = [
         },
         {
           src: "/Images/moodly/1.png", // Ensure this image exists at public/assets/images/moodly/1.png
-          alt: "Responsive Design on Mobile",
+            alt: "Responsive Design on Mobile",
+          },
+          ],
         },
-      ],
-    },
-  },
-  {
-    id: "2",
-    title: "This Website",
-    description:
-      "Built a personal portfolio website using Next.js, Tailwind CSS, and TypeScript.",
-    imageUrl: "", // Ensure this image exists at public/assets/images/portfolio-website.jpg
+        },
+        {
+        id: "2",
+        title: "This Website",
+        description:
+          "Built a personal portfolio website using Next.js, Tailwind CSS, and TypeScript. Deployed on Netlify.",
+        imageUrl: "", // Ensure this image exists at public/assets/images/portfolio-website.jpg
     projectUrl: "https://alon2904.github.io/portfolio-website",
     githubUrl: "https://github.com/alon2904/portfolio-website",
-    tags: ["Next.js", "Tailwind CSS", "TypeScript"],
+    tags: ["Next.js", "Tailwind CSS", "TypeScript", "Netlify"],
   },
   {
     id: "3",
     title: "Serverless Quotes API",
     description:
       "Developed a scalable, serverless API for managing project-based quotes using AWS services. The API allows users to create, retrieve, update, and delete quotes associated with projects, with a robust architecture leveraging AWS Lambda, DynamoDB, and the Serverless Framework.",
-    imageUrl: "/Images/serverless-quotes/1.jpg", // Ensure this image exists at public/assets/images/serverless-quotes/1.jpg
-    projectUrl: "https://serverless-quotes-api.com",
+    imageUrl: "", // Ensure this image exists at public/assets/images/serverless-quotes/1.jpg
+    projectUrl: "",
     githubUrl: "https://github.com/alon2904/serverless-quotes-api",
     tags: [
       "AWS Lambda",
@@ -143,7 +143,7 @@ export const projects: Project[] = [
     title: "AlonCohenFood",
     description:
       "Food catering website made with React and 'styled-components'.",
-    imageUrl: "/Images/moodly/1.png",
+    imageUrl: "/Images/AlonCohenFood/1.png",
     projectUrl: "https://alon2904.github.io/AlonCohenFood/",
     githubUrl: "https://github.com/alon2904/AlonCohenFood",
     tags: ["React", "Styled-Components", "JavaScript", "GitHub Pages"],

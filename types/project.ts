@@ -10,6 +10,8 @@ export interface Section {
     sections: Section[];
     images: Array<{ src: string; alt: string }>;
   }
+
+ 
   
   export interface Project {
     id: string;
