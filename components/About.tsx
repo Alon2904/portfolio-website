@@ -1,7 +1,7 @@
 // components/AboutMe.jsx
 import React from "react";
 import { aboutMe } from "@/utils/aboutMe";
-import { playfair } from "@/utils/fonts";
+import { sourceCode } from "@/utils/fonts";
 import { techStack } from "@/utils/techStack";
 import StackIcon from "@/components/StackIcon";
 import AnimatedSection from "./layout/AnimatedSection";
@@ -19,7 +19,7 @@ const About = () => {
     >
       <div className="flex flex-row justify-between w-full">
         <h1
-          className={`text-4xl md:text-6xl font-bold mb-2 ${playfair.className}`}
+          className={`text-4xl md:text-6xl font-bold mb-2 ${sourceCode.className}`}
         >
           About Me.
         </h1>

@@ -1,26 +1,20 @@
 // src/utils/contactData.ts
 
 export const contactInfo = {
-    email: "your.email@example.com",
-    phone: "+1 (234) 567-890",
-    address: "1234 Main St, Anytown, USA",
+    email: "aloncohen2904@gmail.com",
+    address: "Swindon, UK",
     social: [
       {
         name: "LinkedIn",
-        href: "https://www.linkedin.com/in/yourprofile",
-        icon: "linkedin", // We'll use a generic icon name here
+        href: "https://linkedin.com/alon-cohenn",
+        icon: "linkedin", 
       },
       {
         name: "GitHub",
-        href: "https://github.com/yourusername",
+        href: "https://github.com/alon2904",
         icon: "github",
       },
-      {
-        name: "Twitter",
-        href: "https://twitter.com/yourusername",
-        icon: "twitter",
-      },
-      // Add more social platforms as needed
+   
     ],
   };
   

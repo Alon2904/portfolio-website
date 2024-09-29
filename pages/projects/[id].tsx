@@ -6,7 +6,7 @@ import { Project } from '@/types/project';
 import Image from 'next/image';
 import React from 'react';
 import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa';
-import { playfair } from '@/utils/fonts';
+import { sourceCode } from '@/utils/fonts';
 import Link from 'next/link';
 import Head from 'next/head';
 
@@ -31,7 +31,7 @@ const ProjectPage: React.FC<ProjectPageProps> = ({ project }) => {
           {/* Back to Projects Link */}
         
           {/* Project Title */}
-          <h1 className={`text-4xl md:text-5xl font-bold mb-4 ${playfair.className}`}>
+          <h1 className={`text-4xl md:text-5xl font-bold mb-4 ${sourceCode.className}`}>
             {projectPage?.title || project.title}
           </h1>
 

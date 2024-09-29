@@ -1,5 +1,5 @@
 import React from "react";
-import { playfair } from "@/utils/fonts";
+import { sourceCode } from "@/utils/fonts";
 import { experience } from "@/utils/experience";
 import { BsCheckCircleFill } from "react-icons/bs";
 import AnimatedSection from "./layout/AnimatedSection";
@@ -11,7 +11,7 @@ const Experience = () => {
       id="experience"
     >
       <h1
-        className={`text-5xl md:text-6xl font-bold mb-8 md:mb-12 ${playfair.className}`}
+        className={`text-5xl md:text-6xl font-bold mb-8 md:mb-12 ${sourceCode.className}`}
       >
         Experience.
       </h1>

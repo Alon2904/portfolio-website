@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { playfair } from "@/utils/fonts";
+import { sourceCode } from "@/utils/fonts";
 import { Link as ScrollLink, scroller } from "react-scroll";
 import { CgMenuRight, CgClose } from "react-icons/cg";
 import { motion, AnimatePresence } from "framer-motion";
@@ -46,7 +46,7 @@ const NavBar = () => {
 
   return (
     <nav className="sticky top-0 w-screen md:w-full flex justify-between items-center py-4 px-8 bg-white z-50 shadow-md">
-      <Link href="/" className={playfair.className}>
+      <Link href="/" className={sourceCode.className}>
         Alon Cohen;
       </Link>
       <div className="hidden md:flex gap-4">
@@ -103,7 +103,7 @@ const NavBar = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
-          className={`md:hidden fixed inset-0 bg-base-100 flex flex-col gap-6 items-center justify-center z-40 ${playfair.className}`}
+          className={`md:hidden fixed inset-0 bg-base-100 flex flex-col gap-6 items-center justify-center z-40 ${sourceCode.className}`}
         >
           {links.map(({ href, label }) => (
             <ScrollLink

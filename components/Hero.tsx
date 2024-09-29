@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { ReactTyped, Typed } from "react-typed";
 import { heroText } from "@/utils/heroText";
-import { playfair } from "@/utils/fonts";
+import { sourceCode } from "@/utils/fonts";
 import AnimatedSection from "./layout/AnimatedSection";
 
 const Hero = () => {
@@ -15,7 +15,7 @@ const Hero = () => {
       id="home"
     >
       <h1
-        className={`text-5xl md:text-8xl font-bold mb-2 z-30 ${playfair.className}`}
+        className={`text-5xl md:text-8xl font-bold mb-2 z-30 ${sourceCode.className}`}
       >
         <ReactTyped
           typedRef={setTyped}
