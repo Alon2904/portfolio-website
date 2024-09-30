@@ -2,9 +2,9 @@
 "use client";
 
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { sourceCode } from "@/utils/fonts";
-import { Link as ScrollLink, scroller } from "react-scroll";
+import { Link as ScrollLink } from "react-scroll";
 import { CgMenuRight, CgClose } from "react-icons/cg";
 import { motion, AnimatePresence } from "framer-motion";
 
