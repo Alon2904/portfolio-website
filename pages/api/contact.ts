@@ -36,15 +36,15 @@ export default async function handler(
 
   // Define email options
   const msg = {
-    to: process.env.RECIPIENT_EMAIL as string,                 
+    to: process.env.RECIPIENT_EMAIL as string,
     from: {
-      email: process.env.SENDER_EMAIL as string,               
-      name: name,                                             
+      email: process.env.SENDER_EMAIL as string,
+      name: name,
     },
     subject: `New Contact Form Submission from ${name}`,
     text: message,
     html: `<p>${message}</p>`,
-    replyTo: email,                                          
+    replyTo: email,
   };
 
   try {
@@ -55,15 +55,37 @@ export default async function handler(
     return res
       .status(200)
       .json({ message: 'Your message has been sent successfully!' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error sending email:', error);
 
-    if (error.response) {
-      console.error(error.response.body);
+    if (isSendGridError(error)) {
+      console.error('SendGrid error response:', error.response.body);
+    } else if (error instanceof Error) {
+      console.error('Error message:', error.message);
     }
 
+    // Respond with an error message
     return res
       .status(500)
       .json({ message: 'Something went wrong. Please try again later.' });
   }
+}
+
+// Type guard function to check if error is a SendGrid error
+function isSendGridError(error: unknown): error is SendGridError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'response' in error &&
+    typeof (error as { response: unknown }).response === 'object' &&
+    error.response !== null &&
+    'body' in (error as { response: { body: unknown } }).response
+  );
+}
+
+// Interface for SendGridError
+interface SendGridError extends Error {
+  response: {
+    body: unknown;
+  };
 }
