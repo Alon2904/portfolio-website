@@ -68,6 +68,8 @@ const NavBar = () => {
           </ScrollLink>
         ))}
       </div>
+
+      {/* Mobile Menu */}
       <div className="md:hidden z-50">
         <AnimatePresence mode="wait">
           {isMenuOpen ? (
@@ -104,7 +106,7 @@ const NavBar = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
-          className={`md:hidden fixed inset-0 bg-base-100 flex flex-col gap-6 items-center justify-center z-40 ${sourceCode.className}`}
+          className={`md:hidden fixed inset-0 bg-base-100 flex flex-col gap-6 items-center justify-center z-40 bg-white ${sourceCode.className}`}
         >
           {links.map(({ href, label }) => (
             <ScrollLink
