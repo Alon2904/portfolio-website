@@ -74,7 +74,7 @@ const Contact: React.FC = () => {
 
   return (
     <AnimatedSection
-      className="flex flex-col justify-center min-h-[70vh] lg:min-h-[80vh] p-10"
+      className="flex flex-col justify-center min-h-[80vh] lg:min-h-[110vh] p-12 "
       id="contact"
     >
       <h1

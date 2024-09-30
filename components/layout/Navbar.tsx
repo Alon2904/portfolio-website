@@ -40,6 +40,7 @@ const NavBar = () => {
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   const handleSetActive = (label: string) => {
+    console.log('active label:', label);
     setIsSelected(label);
     localStorage.setItem("lastSection", label);
   };
