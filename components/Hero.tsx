@@ -1,12 +1,12 @@
 'use client';
-import React, { useState, useEffect } from "react";
-import { ReactTyped, Typed } from "react-typed";
+import React from "react";
+import { ReactTyped } from "react-typed";
 import { heroText } from "@/utils/heroText";
 import { sourceCode } from "@/utils/fonts";
 import AnimatedSection from "./layout/AnimatedSection";
 
 const Hero = () => {
-  const [typed, setTyped] = useState<Typed | undefined>();
+
 
 
   return (
@@ -18,7 +18,6 @@ const Hero = () => {
         className={`text-5xl md:text-8xl font-bold mb-2 z-30 ${sourceCode.className}`}
       >
         <ReactTyped
-          typedRef={setTyped}
           strings={[heroText.title]} // Ensure heroText.title is a string or an array of strings
           typeSpeed={100}
           backSpeed={100}
