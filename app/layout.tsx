@@ -1,16 +1,13 @@
 import "./globals.css";
 import { poppins } from "@/utils/fonts";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
-import Head from "next/head";
-
 
 export const metadata = {
-  title: "Alon Cohen's Portfolio",
+  title: "Alon Cohen - Software Engineer",
   description: "Alon's Portfolio",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png", // Optional: For Apple devices
-    shortcut: "/favicon.ico", // Optional: Legacy favicon
+    icon: "/images/favicon.ico",
+    appleIcon: "/images/favicon.ico",
   },
 };
 
@@ -21,6 +18,11 @@ export default function RootLayout({
 }>) {
   return (
     <html>
+      <head>
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <title>{metadata.title}</title>
+        <meta name="description" content={metadata.description} />
+      </head>
       <body className={poppins.className}>
         <main className="flex flex-col md:flex-row relative">
           <section className="md:w-7/12 flex flex-col">
@@ -31,5 +33,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
