@@ -53,7 +53,7 @@ const Contact: React.FC = () => {
       } else {
         setStatus({ type: "error", message: data.message });
       }
-    } catch (error) {
+    } catch  {
       setStatus({
         type: "error",
         message: "Something went wrong. Please try again later.",
