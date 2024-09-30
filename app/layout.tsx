@@ -20,7 +20,6 @@ export default function RootLayout({
     <html>
       <head>
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
       </head>
       <body className={poppins.className}>
