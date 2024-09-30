@@ -1,4 +1,5 @@
 // src/pages/projects/[id].tsx
+'use client'
 
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { projects } from '@/utils/projects';
@@ -8,6 +9,7 @@ import React from 'react';
 import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa';
 import { sourceCode } from '@/utils/fonts';
 import Head from 'next/head';
+import '../../app/globals.css';
 
 interface ProjectPageProps {
   project: Project;
