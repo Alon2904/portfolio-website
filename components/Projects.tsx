@@ -9,7 +9,7 @@ import AnimatedSection from "./layout/AnimatedSection";
 import ProjectCard from "./ProjectCard";
 
 const Projects: React.FC = () => (
-  <section id="projects" className="py-10 bg-white">
+  <section id="projects" className="py-10 bg-white min-h-[70vh] lg:min-h-[80vh] p-10 mb-24">
     <AnimatedSection className="container mx-auto px-4">
       <h2 className={`text-5xl md:text-6xl font-bold text-start mb-12 ${sourceCode.className}`}>
         Projects.

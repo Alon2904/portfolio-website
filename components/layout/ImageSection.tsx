@@ -1,58 +1,40 @@
-// components/AboutMe.jsx
+"use client";
+import Image from "next/image";
 import React from "react";
-import { aboutMe } from "@/utils/aboutMe";
-import { sourceCode } from "@/utils/fonts";
-import { techStack } from "@/utils/techStack";
-import StackIcon from "@/components/StackIcon";
-import AnimatedSection from "./layout/AnimatedSection";
-import { FaChevronDown } from "react-icons/fa";
-import Link from "next/link";
+import { SocialIcon } from "@/components/layout/SocialIcon";
+import { IconName } from "@fortawesome/fontawesome-svg-core";
+import { socialItems } from "@/utils/socialItems";
+import AnimatedSection from "@/components/layout/AnimatedSection";
 
-const About = () => {
-  const iconStyle =
-    "transform hover:scale-110 transition-transform text-3xl hover:text-primary";
+const ImageSection = () => {
+  const iconsStyle =
+    "text-white text-4xl md:text-3xl transform transition-transform duration-300 md:hover:scale-125 md:hover:rotate-12 md:hover:-translate-x-2";
 
   return (
-    <AnimatedSection
-      className="flex flex-col justify-center min-h-[70vh] lg:min-h-[80vh] p-10  md:pe-56"
-      id="about"
-    >
-      <div className="flex flex-row justify-between w-full">
-        <h1
-          className={`text-4xl md:text-6xl font-bold mb-2 ${sourceCode.className}`}
-        >
-          About Me.
-        </h1>
-        <Link
-          href="https://drive.google.com/file/d/149B5bTah7nQV3ir3-l-6wIT4dG5sRlCQ/view?usp=sharing"
-          target="_blank"
-          className="mx-auto flex flex-col items-center justify-end mb-2 lg:justify-center lg:mb-0"
-        >
-          <button className="btn flex items-center justify-center md:btn-wide btn-primary text-primary-content font-normal shadow px-4 py-2 rounded-full transition-colors duration-300 hover:bg-black hover:text-white">
-            <span className="mr-2">Download CV</span>
-            IconComponent={Icon}
-            <FaChevronDown />
-          </button>
-        </Link>
-      </div>
-      <p className="text-lg md:text-xl font-light mb-4">{aboutMe.description}</p>
-
-      <h2 className={`text-lg md:text-xl font-medium mb-2`}>
-        {`Technologies I've worked with:`}
-      </h2>
-      {/* Responsive Grid Layout with Gaps */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6">
-        {techStack.map(({ name, Icon }) => (
-          <StackIcon
-            key={name}
-            IconComponent={Icon}
-            name={name}
-            style={iconStyle}
+    <section className="relative w-screen h-[50vh] flex flex-col md:flex-row md:fixed md:right-0 md:top-0 md:h-full items-center justify-center bg-black md:w-5/12">
+      <AnimatedSection className="flex md:flex-col gap-4 mb-8 md:mb-0 md:fixed md:right-0 transform md:-translate-y-1/2 md:pr-4 xl:pr-8 2xl:pr-12">
+        {socialItems.map(({ link, icon }) => (
+          <SocialIcon
+            key={link}
+            link={link}
+            icon={icon as IconName}
+            style={iconsStyle}
           />
         ))}
-      </div>
-    </AnimatedSection>
+      </AnimatedSection>
+      <AnimatedSection className="flex items-center justify-center">
+        <Image
+          className="md:sticky object-cover rounded-full overflow-hidden w-[65%] aspect-square md:w-54 lg:w-80 drop-shadow-2xl shadow-white md:hover:border-2 md:hover:border-white md:transition-all md:duration-200 md:hover:scale-105 z-10 shadow-lg sm:shadow-2xl"
+          src="/images/profile-photo1.jpg"
+          alt="Profile Picture"
+          width={800}
+          height={800}
+          style={{ objectPosition: 'top' }}
+        />
+      </AnimatedSection>
+
+    </section>
   );
 };
 
-export default About;
+export default ImageSection;
