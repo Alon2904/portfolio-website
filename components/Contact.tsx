@@ -4,18 +4,12 @@ import React, { useState } from "react";
 import { contactInfo } from "@/utils/contact";
 import { sourceCode } from "@/utils/fonts";
 import AnimatedSection from "./layout/AnimatedSection";
-import { FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
-import { FaLinkedin, FaGithub, FaTwitter } from "react-icons/fa";
-import { IconType } from "react-icons";
+import { FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { SocialIcon } from "./layout/SocialIcon";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 import { socialItems } from "@/utils/socialItems";
 
-interface SocialIconProps {
-  href: string;
-  name: string;
-  icon: string;
-}
+
 
 
 
@@ -131,7 +125,7 @@ const Contact: React.FC = () => {
                 type="text"
                 id="name"
                 name="name"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border shadow-xl rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 value={formData.name}
                 onChange={handleChange}
                 required
@@ -147,7 +141,7 @@ const Contact: React.FC = () => {
                 type="email"
                 id="email"
                 name="email"
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border shadow-xl rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 value={formData.email}
                 onChange={handleChange}
                 required
@@ -163,7 +157,7 @@ const Contact: React.FC = () => {
                 id="message"
                 name="message"
                 rows={3}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full px-4 py-2 border shadow-xl rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 value={formData.message}
                 onChange={handleChange}
                 required
@@ -171,11 +165,10 @@ const Contact: React.FC = () => {
             </div>
 
             {/* Submit Button */}
-            {/* Submit Button */}
             <div>
                 <button
                 type="submit"
-                className={`w-full flex items-center justify-center border rounded-lg shadow-lg bg-primary text-black transition-colors duration-300 ease-in-out ${
+                className={`w-full flex items-center justify-center border shadow-xl p-2 rounded-lg  bg-primary text-black transition-colors duration-300 ease-in-out ${
                   isSubmitting
                   ? "opacity-50 cursor-not-allowed"
                   : "hover:bg-black hover:text-white hover:shadow-xl"

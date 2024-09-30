@@ -7,7 +7,6 @@ import Image from 'next/image';
 import React from 'react';
 import { FaExternalLinkAlt, FaGithub } from 'react-icons/fa';
 import { sourceCode } from '@/utils/fonts';
-import Link from 'next/link';
 import Head from 'next/head';
 
 interface ProjectPageProps {

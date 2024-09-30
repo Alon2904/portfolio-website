@@ -26,10 +26,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
   return (
     <div
-      className={`bg-white rounded-lg shadow-lg flex flex-col overflow-hidden transition-transform transform hover:scale-105 h-full ${
+      className={`bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden transition-transform transform hover:scale-105 h-full ${
         hasProjectPage ? 'cursor-pointer' : 'cursor-default'
       }`}
-      onClick={handleCardClick}
+      // onClick={handleCardClick}
     >
       {/* Project Image */}
       {project.imageUrl && (
