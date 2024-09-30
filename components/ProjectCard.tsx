@@ -7,8 +7,7 @@ import { FaExternalLinkAlt, FaGithub } from "react-icons/fa";
 import Image from "next/image";
 import { Project } from "@/types/project";
 import { sourceCode } from "@/utils/fonts";
-import { useRouter } from 'next/navigation'; // For Next.js 13+
- // If you're using Next.js 12 or below, use 'next/router' instead
+// import { useRouter } from 'next/navigation'; 
 
 interface ProjectCardProps {
   project: Project;
@@ -16,13 +15,14 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const hasProjectPage = Boolean(project.projectPage);
-  const router = useRouter();
+  // const router = useRouter();
 
-  const handleCardClick = () => {
-    if (hasProjectPage) {
-      router.push(`/projects/${project.id}`);
-    }
-  };
+  // // @ts-ignore
+  // const handleCardClick = () => {
+  //   if (hasProjectPage) {
+  //     router.push(`/projects/${project.id}`);
+  //   }
+  // };
 
   return (
     <div
