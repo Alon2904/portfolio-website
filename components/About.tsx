@@ -19,7 +19,7 @@ const About = () => {
     >
       <div className="flex flex-row justify-between w-full">
         <h1
-          className={`text-4xl md:text-6xl font-bold mb-2 ${sourceCode.className}`}
+          className={`text-4xl md:text-6xl font-bold mb-6 ${sourceCode.className}`}
         >
           About Me.
         </h1>

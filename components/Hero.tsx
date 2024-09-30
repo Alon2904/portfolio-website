@@ -15,7 +15,7 @@ const Hero = () => {
       id="home"
     >
       <h1
-        className={`text-5xl md:text-8xl font-bold mb-2 z-30 ${sourceCode.className}`}
+        className={`text-5xl md:text-8xl font-bold mb-10 z-30 ${sourceCode.className}`}
       >
         <ReactTyped
           strings={[heroText.title]} // Ensure heroText.title is a string or an array of strings
