@@ -14,7 +14,7 @@ const About = () => {
 
   return (
     <AnimatedSection
-      className="flex flex-col justify-center min-h-[70vh] lg:min-h-[100vh] p-10  md:pe-56"
+      className="flex flex-col justify-center min-h-[60vh] lg:min-h-[90vh] p-10  md:pe-56"
       id="about"
     >
       <div className="flex flex-row justify-between w-full">
