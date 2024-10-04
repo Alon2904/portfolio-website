@@ -83,7 +83,7 @@ export const projects: Project[] = [
       "Developed a scalable, serverless API for managing project-based quotes using AWS services. The API allows users to create, retrieve, update, and delete quotes associated with projects, with a robust architecture leveraging AWS Lambda, DynamoDB, and the Serverless Framework.",
     imageUrl: "", // Ensure this image exists at public/assets/images/serverless-quotes/1.jpg
     projectUrl: "",
-    githubUrl: "https://github.com/alon2904/serverless-quotes-api",
+    githubUrl: "https://github.com/Alon2904/quoteware-serverless-api",
     tags: [
       "AWS Lambda",
       "DynamoDB",
