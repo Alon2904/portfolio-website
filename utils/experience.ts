@@ -22,7 +22,7 @@ export const experience = [
       {
         date: "June 2021 – June 2022",
         company: "ELAL Airelines – Berlin, Germany",
-        position: "Full Stack Softwrare Engineer",
+        position: "Full Stack Software Engineer",
         description: [
           "Led development of a web application using TypeScript, Node.js, and React, streamlining security operations and improving workflow efficiency. ",
           "Deployed across multiple EL AL branches in Europe, enhancing communication and data accuracy for operational management."
