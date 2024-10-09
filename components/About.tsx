@@ -24,7 +24,7 @@ const About = () => {
           About Me.
         </h1>
         <Link
-          href="https://drive.google.com/uc?export=download&id=1FwSjPfYCZFXN7wRc9ZHuXAZ-4fqneFwu"
+          href="https://drive.google.com/uc?export=download&id=150Sc77sUsPvyFyuICq_61gM9sE78uVdt"
           target="_blank"
           className="mx-auto flex flex-col items-center justify-end mb-2 lg:justify-center lg:mb-0"
         >
