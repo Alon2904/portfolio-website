@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { ContactShadows, RoundedBoxGeometry } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { ContactShadows, Environment, Lightformer, RoundedBoxGeometry } from "@react-three/drei";
+import { Bloom, EffectComposer, SMAA } from "@react-three/postprocessing";
+import { N8AOPostPass } from "n8ao";
 import * as THREE from "three";
 
 // A cloud architecture built the way Alon builds one: the plan is drawn first as thin
@@ -117,7 +119,7 @@ function Traffic({ running }: { running: boolean }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <lineBasicMaterial color="#ffb547" transparent opacity={0.9} />
+      <lineBasicMaterial color="#ffc46b" transparent opacity={0.9} toneMapped={false} />
     </lineSegments>
   );
 }
@@ -204,7 +206,7 @@ function PlanOutline({ part, drawRef, landRef }: { part: Part; drawRef: { curren
 
 // Forms. Each keeps the footprint of its plan outline but reads as the thing it is.
 // Every form takes the part's materials so opacity and colour animate together.
-type Mats = { main: THREE.MeshStandardMaterial; light: THREE.MeshStandardMaterial; dark: THREE.MeshStandardMaterial };
+type Mats = { main: THREE.MeshPhysicalMaterial; light: THREE.MeshPhysicalMaterial; dark: THREE.MeshPhysicalMaterial };
 
 function Device({ size, mats }: { size: [number, number, number]; mats: Mats }) {
   const [w, h, d] = size;
@@ -391,21 +393,27 @@ function PartMesh({ part, index, progressRef }: { part: Part; index: number; pro
   // Materials live in a ref so the frame loop may change their opacity.
   const matsRef = useRef<Mats | null>(null);
   if (matsRef.current === null) {
-    const common = { transparent: true, opacity: 0, roughness: 0.55, metalness: 0.02 };
-    const main = new THREE.MeshStandardMaterial({ ...common, color: part.tint, map: isBase ? grid : null });
+    const common = { transparent: true, opacity: 0, roughness: 0.42, metalness: 0.0, clearcoat: 0.35, clearcoatRoughness: 0.25, envMapIntensity: 0.9 };
+    const main = new THREE.MeshPhysicalMaterial({ ...common, color: part.tint, map: isBase ? grid : null });
     if (isBase) {
+      main.roughness = 0.7;
+      main.clearcoat = 0.15;
+      main.envMapIntensity = 0.5;
       main.emissive = new THREE.Color("#2a3b52");
-      main.emissiveIntensity = 0.55;
+      main.emissiveIntensity = 0.5;
     }
     if (isAi) {
       main.emissive = new THREE.Color("#14ad92");
-      main.emissiveIntensity = 0.2;
-      main.roughness = 0.35;
+      main.emissiveIntensity = 0.25;
+      main.roughness = 0.3;
     }
-    const light = new THREE.MeshStandardMaterial({ ...common, color: shade(part.tint, 0.28), emissive: shade(part.tint, 0.2), emissiveIntensity: isAi ? 0.9 : 0.5 });
-    const dark = new THREE.MeshStandardMaterial({ ...common, color: shade(part.tint, -0.16) });
+    const light = new THREE.MeshPhysicalMaterial({ ...common, color: shade(part.tint, 0.28), emissive: shade(part.tint, 0.2), emissiveIntensity: isAi ? 2.4 : 0.6 });
+    if (isAi) light.toneMapped = false;
+    const dark = new THREE.MeshPhysicalMaterial({ ...common, color: shade(part.tint, -0.16), clearcoat: 0 });
     matsRef.current = { main, light, dark };
   }
+  // Three.js materials are imperative objects; the frame loop changes their opacity.
+  // eslint-disable-next-line react-hooks/refs
   const mats = matsRef.current;
 
   useFrame(({ clock }) => {
@@ -484,7 +492,43 @@ function Scene({ animate, onProgress }: SceneProps) {
         <PartMesh key={part.id} part={part} index={i} progressRef={landRefs[i]} />
       ))}
       <Traffic running={running} />
+      <ContactShadows position={[0, 0.002, 0]} opacity={0.55} scale={[7.1, 4.1]} blur={1.4} far={1.2} resolution={1024} color="#06101c" />
     </group>
+  );
+}
+
+// A studio built from light panels rather than a downloaded HDR: a large soft top light,
+// a cool fill from the back left, a warm key from the front right. The parts pick these
+// up as reflections, which is most of what separates a render from a product shot.
+function Studio() {
+  return (
+    <Environment resolution={256} frames={1}>
+      <Lightformer form="rect" intensity={2.2} color="#ffffff" position={[0, 6, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[9, 9, 1]} />
+      <Lightformer form="rect" intensity={1.1} color="#cfe0ff" position={[-7, 3, -5]} rotation={[0, Math.PI / 3, 0]} scale={[6, 4, 1]} />
+      <Lightformer form="rect" intensity={1.4} color="#fff2e2" position={[7, 2.5, 6]} rotation={[0, -Math.PI / 3.2, 0]} scale={[6, 3, 1]} />
+      <Lightformer form="circle" intensity={0.6} color="#ffffff" position={[0, -4, 4]} rotation={[Math.PI / 2, 0, 0]} scale={[6, 6, 1]} />
+    </Environment>
+  );
+}
+
+// Ambient occlusion for the crevices, bloom for the core and the traffic, SMAA for the edges.
+function Effects() {
+  const { scene, camera, size } = useThree();
+  const ao = useMemo(() => {
+    const pass = new N8AOPostPass(scene, camera, size.width, size.height);
+    pass.configuration.aoRadius = 0.55;
+    pass.configuration.intensity = 2.2;
+    pass.configuration.distanceFalloff = 0.9;
+    pass.configuration.screenSpaceRadius = false;
+    pass.configuration.halfRes = true;
+    return pass;
+  }, [scene, camera, size.width, size.height]);
+  return (
+    <EffectComposer multisampling={0} enableNormalPass={false}>
+      <primitive object={ao} />
+      <Bloom luminanceThreshold={0.95} luminanceSmoothing={0.2} intensity={0.55} mipmapBlur radius={0.6} />
+      <SMAA />
+    </EffectComposer>
   );
 }
 
@@ -521,13 +565,13 @@ export function Platform() {
           dpr={[1, 1.5]}
           frameloop={visible ? "always" : "never"}
           camera={{ position: [7.6, 6.2, 8.6], fov: 26 }}
-          gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
+          gl={{ antialias: false, alpha: true, powerPreference: "low-power", toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
         >
-          <ambientLight intensity={1.15} />
-          <directionalLight position={[5, 8, 4]} intensity={1.2} />
-          <directionalLight position={[-6, 4, -5]} intensity={0.3} />
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[5, 8, 4]} intensity={1.0} />
+          <Studio />
           <Scene animate={!reduced} onProgress={setLanded} />
-          <ContactShadows position={[0, -0.4, 0]} opacity={0.28} scale={12} blur={3} far={1.2} />
+          <Effects />
         </Canvas>
       </div>
       <ol className="platform-labels" aria-hidden="true">
