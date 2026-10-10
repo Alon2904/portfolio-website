@@ -1,0 +1,10 @@
+import { chromium } from "@playwright/test";
+const browser = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
+const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 });
+const errors = [];
+page.on("console", (m) => { if (m.type() === "error" || m.type() === "warning") errors.push(m.text().slice(0, 160)); });
+await page.goto("http://localhost:3000/", { waitUntil: "domcontentloaded" });
+await page.waitForTimeout(9000);
+await page.screenshot({ path: "/tmp/v3-shots/hero-zoom.png", clip: { x: 820, y: 260, width: 420, height: 320 } });
+console.log("console:", errors.slice(0, 5));
+await browser.close();

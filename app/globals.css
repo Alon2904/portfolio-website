@@ -1,22 +1,91 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
-  --background: #ffffff; /* Light mode background color */
-  --foreground: #000000; /* Light mode text color */
+  --paper: #fafbfc;
+  --ink: #172b3a;
+  --text: #414d58;
+  --muted: #5d6b77;
+  --line: #d7dfe5;
+  --panel: #edf3f8;
+  --panel-line: #bacdde;
+  --blue: #1e4e9a;
+  --pulse: #3b82f6;
 }
 
-
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-panel: var(--panel);
+  --color-panel-line: var(--panel-line);
+  --color-blue: var(--blue);
+  --color-pulse: var(--pulse);
+  --font-sans: var(--font-plex-sans), "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-plex-serif), Georgia, serif;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+    color: var(--ink);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  a {
+    color: var(--blue);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, var(--blue) 45%, transparent);
+  }
+
+  a:hover {
+    text-decoration-color: var(--blue);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 3px;
   }
 }
+
+/* The 3D platform in the hero. */
+.platform-figure { width: 100%; }
+.platform-canvas { aspect-ratio: 4 / 3; width: 100%; }
+.platform-canvas canvas { display: block; }
+.platform-labels {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; margin-top: 0.75rem;
+  font-size: 0.85rem; color: var(--muted); list-style: none; padding: 0;
+}
+.platform-labels li { opacity: 0.35; transition: opacity 400ms ease; }
+.platform-labels li[data-landed="true"] { opacity: 1; color: var(--ink); }
+@media (max-width: 639px) { .platform-canvas { aspect-ratio: 1 / 1; } }
+
+/* Shared page edge and baseline for navigation, content and footer. */
+.site-shell { width: min(100%, 1248px); margin-inline: auto; padding-inline: 48px; }
+::selection { background: #d5e4f3; color: var(--ink); }
+@media (max-width: 639px) { .site-shell { padding-inline: 24px; } }

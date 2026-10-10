@@ -1,39 +1,36 @@
 {
-  "name": "portfolio-website",
+  "name": "aloncohen-dev",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/content-check.mjs && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "check": "node scripts/content-check.mjs",
+    "test": "playwright test",
+    "shots": "node scripts/shots.mjs"
   },
   "dependencies": {
-    "@fortawesome/free-brands-svg-icons": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "@sendgrid/mail": "^8.1.3",
-    "@types/react-fontawesome": "^1.6.8",
-    "framer-motion": "^11.8.0",
-    "next": "14.2.13",
-    "nodemailer": "^6.9.15",
-    "nodemailer-sendgrid-transport": "^0.2.0",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-hot-toast": "^2.4.1",
-    "react-icons": "^5.3.0",
-    "react-scroll": "^1.9.0",
-    "react-typed": "^2.0.12"
+    "@fontsource/ibm-plex-serif": "^5.3.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.1",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "three": "^0.186.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
-    "@types/nodemailer": "^6.4.16",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "@types/react-scroll": "^1.8.10",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.13",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.186.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }

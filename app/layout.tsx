@@ -1,33 +1,43 @@
+import type { Metadata } from "next";
+import { IBM_Plex_Sans, IBM_Plex_Serif } from "next/font/google";
 import "./globals.css";
-import { poppins } from "@/utils/fonts";
-import LayoutWrapper from "@/components/layout/LayoutWrapper";
+import "./design.css";
+import { site } from "@/content/site";
+import { Nav } from "@/components/Nav";
+import { Footer } from "@/components/Footer";
 
-export const metadata = {
-  title: "Alon Cohen - Software Engineer",
-  description: "Alon's Portfolio",
-  icons: {
-    icon: "/images/favicon.ico",
-    appleIcon: "/images/favicon.ico",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
+const plexSerif = IBM_Plex_Serif({
+  variable: "--font-plex-serif",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
+  title: `${site.name}, ${site.role}`,
+  description: site.description,
+  openGraph: {
+    title: `${site.name}, ${site.role}`,
+    description: site.description,
+    url: site.url,
+    siteName: site.name,
+    type: "website",
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html>
-      <head>
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        <meta name="description" content={metadata.description} />
-      </head>
-      <body className={poppins.className}>
-        <main className="flex flex-col md:flex-row relative">
-          <section className="md:w-7/12 flex flex-col">
-            <LayoutWrapper>{children}</LayoutWrapper>
-          </section>
-        </main>
+    <html lang="en" className={`${plexSans.variable} ${plexSerif.variable} h-full`}>
+      <body className="min-h-full flex flex-col">
+        <Nav />
+        <main className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );
