@@ -23,17 +23,17 @@ type Part = {
 };
 
 const PARTS: Part[] = [
-  { id: "base", label: "Cloud", position: [0, -0.06, 0], shape: { kind: "box", size: [7.2, 0.12, 4.2] }, tint: "#fbfcfe", order: 0 },
+  { id: "base", label: "Cloud", position: [0, -0.06, 0], shape: { kind: "box", size: [7.2, 0.12, 4.2] }, tint: "#2a3b52", order: 0 },
   { id: "client-1", label: "Clients", position: [-2.8, 0.22, -0.9], shape: { kind: "box", size: [0.42, 0.28, 0.42] }, tint: "#e4ecf7", order: 1 },
   { id: "client-2", label: "Clients", position: [-2.8, 0.22, 0], shape: { kind: "box", size: [0.42, 0.28, 0.42] }, tint: "#e4ecf7", order: 1 },
   { id: "client-3", label: "Clients", position: [-2.8, 0.22, 0.9], shape: { kind: "box", size: [0.42, 0.28, 0.42] }, tint: "#e4ecf7", order: 1 },
-  { id: "gateway", label: "Gateway", position: [-1.55, 0.5, 0], shape: { kind: "box", size: [0.18, 1.0, 2.4] }, tint: "#cfdcf0", order: 2 },
-  { id: "service-1", label: "Services", position: [-0.2, 0.3, -0.9], shape: { kind: "box", size: [0.8, 0.44, 0.64] }, tint: "#c9d9ee", order: 3 },
-  { id: "service-2", label: "Services", position: [-0.2, 0.3, 0], shape: { kind: "box", size: [0.8, 0.44, 0.64] }, tint: "#c9d9ee", order: 3 },
-  { id: "service-3", label: "Services", position: [-0.2, 0.3, 0.9], shape: { kind: "box", size: [0.8, 0.44, 0.64] }, tint: "#c9d9ee", order: 3 },
-  { id: "ai", label: "AI service", position: [1.1, 0.34, 0], shape: { kind: "box", size: [0.8, 0.52, 0.8] }, tint: "#1e4e9a", order: 4 },
-  { id: "database", label: "Database", position: [2.45, 0.36, -0.85], shape: { kind: "cylinder", radius: 0.46, height: 0.56 }, tint: "#b4c9e6", order: 5 },
-  { id: "storage", label: "Storage", position: [2.45, 0.36, 0.85], shape: { kind: "box", size: [0.8, 0.56, 0.8] }, tint: "#b4c9e6", order: 5 },
+  { id: "gateway", label: "Gateway", position: [-1.55, 0.5, 0], shape: { kind: "box", size: [0.18, 1.0, 2.4] }, tint: "#7b5ce0", order: 2 },
+  { id: "service-1", label: "Services", position: [-0.2, 0.3, -0.9], shape: { kind: "box", size: [0.8, 0.44, 0.64] }, tint: "#e07a2a", order: 3 },
+  { id: "service-2", label: "Services", position: [-0.2, 0.3, 0], shape: { kind: "box", size: [0.8, 0.44, 0.64] }, tint: "#e07a2a", order: 3 },
+  { id: "service-3", label: "Services", position: [-0.2, 0.3, 0.9], shape: { kind: "box", size: [0.8, 0.44, 0.64] }, tint: "#e07a2a", order: 3 },
+  { id: "ai", label: "AI service", position: [1.1, 0.34, 0], shape: { kind: "box", size: [0.8, 0.52, 0.8] }, tint: "#14ad92", order: 4 },
+  { id: "database", label: "Database", position: [2.45, 0.36, -0.85], shape: { kind: "cylinder", radius: 0.46, height: 0.56 }, tint: "#4157d0", order: 5 },
+  { id: "storage", label: "Storage", position: [2.45, 0.36, 0.85], shape: { kind: "box", size: [0.8, 0.56, 0.8] }, tint: "#4c9a34", order: 5 },
 ];
 
 const LABELS = ["Clients", "Gateway", "Services", "AI service", "Database", "Storage"];
@@ -117,15 +117,9 @@ function Traffic({ running }: { running: boolean }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
-      <lineBasicMaterial color="#2b6fd6" transparent opacity={0.75} />
+      <lineBasicMaterial color="#ffb547" transparent opacity={0.9} />
     </lineSegments>
   );
-}
-
-function Geometry({ shape, rounded }: { shape: Shape; rounded: boolean }) {
-  if (shape.kind === "cylinder") return <cylinderGeometry args={[shape.radius, shape.radius, shape.height, 48]} />;
-  if (rounded) return <RoundedBoxGeometry args={shape.size} radius={Math.min(0.035, shape.size[1] / 4)} smoothness={3} />;
-  return <boxGeometry args={shape.size} />;
 }
 
 // The base carries a faint drawing grid, like the sheet a plan is drawn on.
@@ -136,9 +130,9 @@ function useGridTexture() {
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = "#fbfcfe";
+    ctx.fillStyle = "#2a3b52";
     ctx.fillRect(0, 0, size, size);
-    ctx.strokeStyle = "rgba(126, 160, 207, 0.45)";
+    ctx.strokeStyle = "rgba(170, 196, 230, 0.4)";
     ctx.lineWidth = 1;
     for (let i = 0; i <= size; i += 32) {
       ctx.beginPath();
@@ -174,7 +168,7 @@ function gatherOffset(part: Part, index: number): { pos: THREE.Vector3; rot: THR
 }
 
 // The plan outline: the part's edges at its final place, drawn stroke by stroke.
-function PlanOutline({ part, drawRef }: { part: Part; drawRef: { current: number } }) {
+function PlanOutline({ part, drawRef, landRef }: { part: Part; drawRef: { current: number }; landRef: { current: number } }) {
   const mat = useRef<THREE.LineDashedMaterial>(null);
   const geometry = useMemo(() => {
     const g =
@@ -196,24 +190,223 @@ function PlanOutline({ part, drawRef }: { part: Part; drawRef: { current: number
     // Each edge draws from its start: the dash grows until it covers the whole edge.
     const d = easeInOut(drawRef.current);
     mat.current.dashSize = 0.001 + 12 * d;
-    mat.current.opacity = Math.min(1, d * 3) * 0.9;
+    // Drawn in as the plan, then gives way once the part has settled into it.
+    const settled = clamp01((landRef.current - 0.85) / 0.15);
+    mat.current.opacity = Math.min(1, d * 3) * 0.9 * (1 - settled);
   });
 
   return (
     <lineSegments ref={lineRef} geometry={geometry} position={part.position}>
-      <lineDashedMaterial ref={mat} color={part.id === "ai" ? "#1e4e9a" : "#7ea0cf"} dashSize={0.001} gapSize={100} transparent opacity={0} />
+      <lineDashedMaterial ref={mat} color={part.id === "ai" ? "#01a88d" : "#9db8dc"} dashSize={0.001} gapSize={100} transparent opacity={0} />
     </lineSegments>
   );
 }
 
+// Forms. Each keeps the footprint of its plan outline but reads as the thing it is.
+// Every form takes the part's materials so opacity and colour animate together.
+type Mats = { main: THREE.MeshStandardMaterial; light: THREE.MeshStandardMaterial; dark: THREE.MeshStandardMaterial };
+
+function Device({ size, mats }: { size: [number, number, number]; mats: Mats }) {
+  const [w, h, d] = size;
+  return (
+    <group>
+      {/* a slim base and a tilted screen, like a laptop seen from a distance */}
+      <mesh material={mats.main} position={[0, -h / 2 + 0.03, 0]}>
+        <RoundedBoxGeometry args={[w, 0.06, d]} radius={0.015} smoothness={2} />
+      </mesh>
+      <mesh material={mats.dark} position={[0, 0.02, -d / 2 + 0.03]} rotation={[-0.28, 0, 0]}>
+        <RoundedBoxGeometry args={[w * 0.92, h * 0.95, 0.03]} radius={0.01} smoothness={2} />
+      </mesh>
+    </group>
+  );
+}
+
+function GatewayPanel({ size, mats }: { size: [number, number, number]; mats: Mats }) {
+  const [w, h, d] = size;
+  const slots = 5;
+  return (
+    <group>
+      <mesh material={mats.main}>
+        <RoundedBoxGeometry args={[w, h, d]} radius={0.03} smoothness={3} />
+      </mesh>
+      {/* horizontal slots on the inbound face */}
+      {Array.from({ length: slots }, (_, i) => (
+        <mesh key={i} material={mats.dark} position={[-w / 2 - 0.004, h / 2 - 0.14 - i * ((h - 0.28) / (slots - 1)), 0]}>
+          <boxGeometry args={[0.01, 0.035, d * 0.78]} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function Server({ size, mats }: { size: [number, number, number]; mats: Mats }) {
+  const [w, h, d] = size;
+  const units = 3;
+  return (
+    <group>
+      <mesh material={mats.main}>
+        <RoundedBoxGeometry args={[w, h, d]} radius={0.03} smoothness={3} />
+      </mesh>
+      {/* rack units with a small light on each, on the face toward the camera */}
+      {Array.from({ length: units }, (_, i) => {
+        const y = h / 2 - 0.08 - i * ((h - 0.16) / (units - 1));
+        return (
+          <group key={i}>
+            <mesh material={mats.dark} position={[0, y, d / 2 + 0.004]}>
+              <boxGeometry args={[w * 0.8, 0.02, 0.01]} />
+            </mesh>
+            <mesh material={mats.light} position={[w * 0.34, y + 0.03, d / 2 + 0.006]}>
+              <boxGeometry args={[0.05, 0.02, 0.01]} />
+            </mesh>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+function AiCore({ size, mats, halo }: { size: [number, number, number]; mats: Mats; halo: React.RefObject<THREE.MeshBasicMaterial | null> }) {
+  const [w, h, d] = size;
+  const core = useRef<THREE.Mesh>(null);
+  useFrame(({ clock }) => {
+    if (core.current) {
+      core.current.rotation.y = clock.getElapsedTime() * 0.6;
+      core.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.4) * 0.3;
+    }
+  });
+  const bar = 0.05;
+  const edges: [number, number, number][] = [];
+  for (const x of [-1, 1]) for (const z of [-1, 1]) edges.push([x, 0, z]);
+  return (
+    <group>
+      {/* an open frame: twelve bars */}
+      {edges.map(([x, , z], i) => (
+        <mesh key={`v${i}`} material={mats.main} position={[(x * (w - bar)) / 2, 0, (z * (d - bar)) / 2]}>
+          <boxGeometry args={[bar, h, bar]} />
+        </mesh>
+      ))}
+      {[-1, 1].map((y) =>
+        [-1, 1].map((z) => (
+          <mesh key={`x${y}${z}`} material={mats.main} position={[0, (y * (h - bar)) / 2, (z * (d - bar)) / 2]}>
+            <boxGeometry args={[w, bar, bar]} />
+          </mesh>
+        )),
+      )}
+      {[-1, 1].map((y) =>
+        [-1, 1].map((x) => (
+          <mesh key={`z${y}${x}`} material={mats.main} position={[(x * (w - bar)) / 2, (y * (h - bar)) / 2, 0]}>
+            <boxGeometry args={[bar, bar, d]} />
+          </mesh>
+        )),
+      )}
+      {/* the core turns inside the frame and glows */}
+      <mesh ref={core} material={mats.light}>
+        <octahedronGeometry args={[Math.min(w, h, d) * 0.34, 0]} />
+      </mesh>
+      <mesh scale={[1.18, 1.22, 1.18]}>
+        <RoundedBoxGeometry args={[w, h, d]} radius={0.06} smoothness={3} />
+        <meshBasicMaterial ref={halo} color="#2fd0b4" transparent opacity={0} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function Database({ radius, height, mats }: { radius: number; height: number; mats: Mats }) {
+  const discs = 3;
+  const gap = 0.05;
+  const dh = (height - gap * (discs - 1)) / discs;
+  return (
+    <group>
+      {Array.from({ length: discs }, (_, i) => (
+        <mesh key={i} material={mats.main} position={[0, -height / 2 + dh / 2 + i * (dh + gap), 0]}>
+          <cylinderGeometry args={[radius, radius, dh, 48]} />
+        </mesh>
+      ))}
+      {/* a thinner core joins the discs */}
+      <mesh material={mats.dark}>
+        <cylinderGeometry args={[radius * 0.9, radius * 0.9, height - 0.06, 48]} />
+      </mesh>
+    </group>
+  );
+}
+
+function Storage({ size, mats }: { size: [number, number, number]; mats: Mats }) {
+  const [w, h, d] = size;
+  const n = 2;
+  const gap = 0.05;
+  const bw = (w - gap) / n;
+  const bh = (h - gap) / n;
+  const bd = (d - gap) / n;
+  const bricks: [number, number, number][] = [];
+  for (let x = 0; x < n; x++) for (let y = 0; y < n; y++) for (let z = 0; z < n; z++) bricks.push([x, y, z]);
+  return (
+    <group>
+      {bricks.map(([x, y, z]) => (
+        <mesh
+          key={`${x}${y}${z}`}
+          material={mats.main}
+          position={[-w / 2 + bw / 2 + x * (bw + gap), -h / 2 + bh / 2 + y * (bh + gap), -d / 2 + bd / 2 + z * (bd + gap)]}
+        >
+          <RoundedBoxGeometry args={[bw, bh, bd]} radius={0.025} smoothness={2} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function Form({ part, mats, halo }: { part: Part; mats: Mats; halo: React.RefObject<THREE.MeshBasicMaterial | null> }) {
+  const sh = part.shape;
+  if (part.id === "base" && sh.kind === "box") {
+    return (
+      <mesh material={mats.main}>
+        <boxGeometry args={sh.size} />
+      </mesh>
+    );
+  }
+  if (part.id.startsWith("client") && sh.kind === "box") return <Device size={sh.size} mats={mats} />;
+  if (part.id === "gateway" && sh.kind === "box") return <GatewayPanel size={sh.size} mats={mats} />;
+  if (part.id.startsWith("service") && sh.kind === "box") return <Server size={sh.size} mats={mats} />;
+  if (part.id === "ai" && sh.kind === "box") return <AiCore size={sh.size} mats={mats} halo={halo} />;
+  if (part.id === "database" && sh.kind === "cylinder") return <Database radius={sh.radius} height={sh.height} mats={mats} />;
+  if (part.id === "storage" && sh.kind === "box") return <Storage size={sh.size} mats={mats} />;
+  return null;
+}
+
+function shade(hex: string, amount: number) {
+  const c = new THREE.Color(hex);
+  const hsl = { h: 0, s: 0, l: 0 };
+  c.getHSL(hsl);
+  c.setHSL(hsl.h, hsl.s, clamp01(hsl.l + amount));
+  return c;
+}
+
 function PartMesh({ part, index, progressRef }: { part: Part; index: number; progressRef: { current: number } }) {
   const mesh = useRef<THREE.Group>(null);
-  const mat = useRef<THREE.MeshStandardMaterial>(null);
   const halo = useRef<THREE.MeshBasicMaterial>(null);
   const from = useMemo(() => gatherOffset(part, index), [part, index]);
   const grid = useGridTexture();
   const isBase = part.id === "base";
   const isAi = part.id === "ai";
+
+  // Materials live in a ref so the frame loop may change their opacity.
+  const matsRef = useRef<Mats | null>(null);
+  if (matsRef.current === null) {
+    const common = { transparent: true, opacity: 0, roughness: 0.55, metalness: 0.02 };
+    const main = new THREE.MeshStandardMaterial({ ...common, color: part.tint, map: isBase ? grid : null });
+    if (isBase) {
+      main.emissive = new THREE.Color("#2a3b52");
+      main.emissiveIntensity = 0.55;
+    }
+    if (isAi) {
+      main.emissive = new THREE.Color("#14ad92");
+      main.emissiveIntensity = 0.2;
+      main.roughness = 0.35;
+    }
+    const light = new THREE.MeshStandardMaterial({ ...common, color: shade(part.tint, 0.28), emissive: shade(part.tint, 0.2), emissiveIntensity: isAi ? 0.9 : 0.5 });
+    const dark = new THREE.MeshStandardMaterial({ ...common, color: shade(part.tint, -0.16) });
+    matsRef.current = { main, light, dark };
+  }
+  const mats = matsRef.current;
 
   useFrame(({ clock }) => {
     const raw = progressRef.current;
@@ -228,9 +421,11 @@ function PartMesh({ part, index, progressRef }: { part: Part; index: number; pro
       const sc = 0.9 + 0.1 * p;
       mesh.current.scale.set(sc, sc, sc);
     }
-    if (mat.current) mat.current.opacity = Math.min(1, raw * 1.6);
+    const o = Math.min(1, raw * 1.6);
+    mats.main.opacity = o;
+    mats.light.opacity = o;
+    mats.dark.opacity = o;
     if (halo.current) {
-      // The AI service breathes once it has landed.
       const breathe = 0.5 + 0.5 * Math.sin(clock.getElapsedTime() * 1.6);
       halo.current.opacity = raw >= 1 ? 0.08 + breathe * 0.1 : 0;
     }
@@ -238,26 +433,7 @@ function PartMesh({ part, index, progressRef }: { part: Part; index: number; pro
 
   return (
     <group ref={mesh} position={part.position}>
-      <mesh>
-        <Geometry shape={part.shape} rounded={!isBase} />
-        <meshStandardMaterial
-          ref={mat}
-          color={part.tint}
-          map={isBase ? grid : null}
-          emissive={isBase ? "#ffffff" : isAi ? "#2b6fd6" : "#000000"}
-          emissiveIntensity={isBase ? 0.2 : isAi ? 0.35 : 0}
-          roughness={isAi ? 0.3 : 0.45}
-          metalness={0.02}
-          transparent
-          opacity={0}
-        />
-      </mesh>
-      {isAi && (
-        <mesh scale={[1.16, 1.2, 1.16]}>
-          <RoundedBoxGeometry args={part.shape.kind === "box" ? part.shape.size : [0.8, 0.5, 0.8]} radius={0.06} smoothness={3} />
-          <meshBasicMaterial ref={halo} color="#4f8ae0" transparent opacity={0} depthWrite={false} />
-        </mesh>
-      )}
+      <Form part={part} mats={mats} halo={halo} />
     </group>
   );
 }
@@ -302,7 +478,7 @@ function Scene({ animate, onProgress }: SceneProps) {
   return (
     <group ref={group} rotation={[0, -0.55, 0]} position={[0, -0.25, 0]}>
       {PARTS.map((part, i) => (
-        <PlanOutline key={`plan-${part.id}`} part={part} drawRef={drawRefs[i]} />
+        <PlanOutline key={`plan-${part.id}`} part={part} drawRef={drawRefs[i]} landRef={landRefs[i]} />
       ))}
       {PARTS.map((part, i) => (
         <PartMesh key={part.id} part={part} index={i} progressRef={landRefs[i]} />
@@ -351,7 +527,7 @@ export function Platform() {
           <directionalLight position={[5, 8, 4]} intensity={1.2} />
           <directionalLight position={[-6, 4, -5]} intensity={0.3} />
           <Scene animate={!reduced} onProgress={setLanded} />
-          <ContactShadows position={[0, -0.4, 0]} opacity={0.16} scale={12} blur={3} far={1.2} />
+          <ContactShadows position={[0, -0.4, 0]} opacity={0.28} scale={12} blur={3} far={1.2} />
         </Canvas>
       </div>
       <ol className="platform-labels" aria-hidden="true">
