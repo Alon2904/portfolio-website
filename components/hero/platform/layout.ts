@@ -39,7 +39,7 @@ export const PARTS: Part[] = [
   { id: "client-1", label: "Clients", kind: "laptop", at: [COLUMN.client, LANES[0]], size: [0.62, 0.42, 0.5], tint: TINT.client, order: 1, yaw: 0.6 },
   { id: "client-2", label: "Clients", kind: "phone", at: [COLUMN.client, LANES[1]], size: [0.3, 0.46, 0.34], tint: TINT.client, order: 1, yaw: 0.45 },
   { id: "client-3", label: "Clients", kind: "monitor", at: [COLUMN.client, LANES[2]], size: [0.66, 0.54, 0.3], tint: TINT.client, order: 1, yaw: 0.35 },
-  { id: "gateway", label: "Gateway", kind: "gateway", at: [COLUMN.gate, 0], size: [0.16, 0.82, 3.24], tint: TINT.gateway, order: 2 },
+  { id: "gateway", label: "Gateway", kind: "gateway", at: [COLUMN.gate, 0], size: [0.26, 0.74, 3.24], tint: TINT.gateway, order: 2 },
   { id: "service-1", label: "Services", kind: "service", at: [COLUMN.service, LANES[0]], size: [0.92, 0.5, 0.7], tint: TINT.service, order: 3 },
   { id: "service-2", label: "Services", kind: "service", at: [COLUMN.service, LANES[1]], size: [0.92, 0.5, 0.7], tint: TINT.service, order: 3 },
   { id: "service-3", label: "Services", kind: "service", at: [COLUMN.service, LANES[2]], size: [0.92, 0.5, 0.7], tint: TINT.service, order: 3 },
@@ -49,6 +49,9 @@ export const PARTS: Part[] = [
 ];
 
 export const LAST_ORDER = 5;
+
+// The opening in the gateway wall that each lane passes through.
+export const GATEWAY_PORTAL = { width: 0.44, height: 0.3 } as const;
 
 // The row of names under the scene. Each lights up when its part has landed.
 export const LEGEND = [

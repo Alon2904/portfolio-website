@@ -211,7 +211,7 @@ function gatherOffset(part: Part, index: number) {
 // locks into its outline.
 export function PartMesh({ part, index, timeline, signals }: Staged & { signals: Signals }) {
   const group = useRef<THREE.Group>(null);
-  const mats = useMemo(() => new PartMaterials(part.tint, part.kind), [part.tint, part.kind]);
+  const mats = useMemo(() => new PartMaterials(part), [part]);
   const from = useMemo(() => gatherOffset(part, index), [part, index]);
   useEffect(() => () => mats.dispose(), [mats]);
 

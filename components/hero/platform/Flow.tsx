@@ -163,14 +163,24 @@ class PulseField {
         const half = PULSE.headWidth + (PULSE.tailWidth - PULSE.headWidth) * f;
         const o = (p * perPulse + k * 2) * 3;
         const y = live ? PULSE.y : HIDDEN;
-        this.tailPositions.set([at.x - at.dz * half, y, at.z + at.dx * half, at.x + at.dz * half, y, at.z - at.dx * half], o);
+        const pos = this.tailPositions;
+        pos[o] = at.x - at.dz * half;
+        pos[o + 1] = y;
+        pos[o + 2] = at.z + at.dx * half;
+        pos[o + 3] = at.x + at.dz * half;
+        pos[o + 4] = y;
+        pos[o + 5] = at.z - at.dx * half;
         const fade = live ? Math.pow(1 - f, 1.6) : 0;
-        const c = [this.color.r * fade, this.color.g * fade, this.color.b * fade];
-        this.tailColors.set([...c, ...c], o);
+        const col = this.tailColors;
+        col[o] = col[o + 3] = this.color.r * fade;
+        col[o + 1] = col[o + 4] = this.color.g * fade;
+        col[o + 2] = col[o + 5] = this.color.b * fade;
       }
       const head = this.locate(pulse.route, Math.min(pulse.s, pulse.route.length));
       const shown = live && pulse.s <= pulse.route.length;
-      this.headPositions.set([head.x, shown ? PULSE.y + 0.01 : HIDDEN, head.z], p * 3);
+      this.headPositions[p * 3] = head.x;
+      this.headPositions[p * 3 + 1] = shown ? PULSE.y + 0.01 : HIDDEN;
+      this.headPositions[p * 3 + 2] = head.z;
     }
     this.tails.attributes.position.needsUpdate = true;
     this.tails.attributes.color.needsUpdate = true;

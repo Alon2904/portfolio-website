@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { RoundedBoxGeometry } from "@react-three/drei";
 import * as THREE from "three";
-import { LANES, type Part } from "./layout";
+import { GATEWAY_PORTAL, LANES, type Part } from "./layout";
 import type { PartMaterials } from "./materials";
 import { circle, raise } from "./shapes";
 import type { Signals } from "./state";
@@ -12,136 +12,166 @@ import type { Signals } from "./state";
 // glows and cools together as it lands.
 type FormProps = { part: Part; mats: PartMaterials; signals: Signals };
 
-function Laptop({ mats }: FormProps) {
+// A screen: a dark bezel with the lit window inside it, facing +z.
+function Screen({ width, height, mats }: { width: number; height: number; mats: PartMaterials }) {
+  const bezel = 0.022;
   return (
     <group>
-      <mesh material={mats.main} position={[0, 0.019, 0.03]}>
-        <RoundedBoxGeometry args={[0.6, 0.03, 0.4]} radius={0.012} smoothness={3} />
+      <mesh material={mats.dark} position={[0, 0, 0.001]}>
+        <planeGeometry args={[width, height]} />
       </mesh>
-      <mesh material={mats.dark} position={[0, 0.0355, 0]}>
-        <boxGeometry args={[0.5, 0.004, 0.2]} />
+      <mesh material={mats.light} position={[0, 0, 0.003]}>
+        <planeGeometry args={[width - bezel * 2, height - bezel * 2]} />
+      </mesh>
+    </group>
+  );
+}
+
+function Laptop({ mats }: FormProps) {
+  const w = 0.62;
+  const d = 0.42;
+  const base = 0.034;
+  return (
+    <group>
+      <mesh material={mats.main} position={[0, base / 2, 0.02]}>
+        <RoundedBoxGeometry args={[w, base, d]} radius={0.012} smoothness={3} />
+      </mesh>
+      {/* the keyboard, and the trackpad in front of it */}
+      <mesh material={mats.decal("keys")} rotation={[-Math.PI / 2, 0, 0]} position={[0, base + 0.001, -0.045]}>
+        <planeGeometry args={[w * 0.84, d * 0.5]} />
+      </mesh>
+      <mesh material={mats.dark} position={[0, base + 0.001, 0.145]}>
+        <boxGeometry args={[0.2, 0.002, 0.11]} />
       </mesh>
       {/* the lid, open and leaning back, with the screen on its inner face */}
-      <group position={[0, 0.034, -0.17]} rotation={[-0.32, 0, 0]}>
-        <mesh material={mats.main} position={[0, 0.19, 0]}>
-          <RoundedBoxGeometry args={[0.6, 0.38, 0.022]} radius={0.01} smoothness={3} />
+      <group position={[0, base, -0.185]} rotation={[-0.3, 0, 0]}>
+        <mesh material={mats.main} position={[0, 0.2, -0.012]}>
+          <RoundedBoxGeometry args={[w, 0.4, 0.024]} radius={0.01} smoothness={3} />
         </mesh>
-        <mesh material={mats.light} position={[0, 0.19, 0.0125]}>
-          <boxGeometry args={[0.54, 0.32, 0.004]} />
-        </mesh>
+        <group position={[0, 0.2, 0]}>
+          <Screen width={w - 0.03} height={0.37} mats={mats} />
+        </group>
       </group>
     </group>
   );
 }
 
 function Phone({ mats }: FormProps) {
+  const w = 0.26;
+  const h = 0.5;
+  const t = 0.03;
   return (
     <group>
-      <group position={[0, 0, 0.08]} rotation={[-0.34, 0, 0]}>
-        <mesh material={mats.main} position={[0, 0.235, 0]}>
-          <RoundedBoxGeometry args={[0.25, 0.46, 0.03]} radius={0.013} smoothness={3} />
+      {/* a small stand holds the phone up, leaning back a little */}
+      <mesh material={mats.dark} position={[0, 0.02, 0.02]}>
+        <RoundedBoxGeometry args={[0.2, 0.04, 0.16]} radius={0.012} smoothness={3} />
+      </mesh>
+      <group position={[0, 0.03, 0.03]} rotation={[-0.2, 0, 0]}>
+        <mesh material={mats.main} position={[0, h / 2, -t / 2]}>
+          <RoundedBoxGeometry args={[w, h, t]} radius={0.028} smoothness={4} />
         </mesh>
-        <mesh material={mats.light} position={[0, 0.235, 0.0165]}>
-          <boxGeometry args={[0.21, 0.41, 0.004]} />
+        <group position={[0, h / 2, 0]}>
+          <Screen width={w - 0.024} height={h - 0.024} mats={mats} />
+        </group>
+        {/* the camera notch */}
+        <mesh material={mats.dark} position={[0, h - 0.028, 0.004]}>
+          <boxGeometry args={[0.07, 0.012, 0.002]} />
         </mesh>
       </group>
-      {/* a small stand behind it */}
-      <mesh material={mats.dark} position={[0, 0.11, -0.06]} rotation={[0.48, 0, 0]}>
-        <boxGeometry args={[0.1, 0.25, 0.014]} />
-      </mesh>
     </group>
   );
 }
 
 function Monitor({ mats }: FormProps) {
+  const w = 0.66;
+  const h = 0.4;
   return (
     <group>
-      <mesh material={mats.main} position={[0, 0.012, 0]}>
+      <mesh material={mats.main} position={[0, 0.011, -0.02]}>
         <RoundedBoxGeometry args={[0.3, 0.022, 0.2]} radius={0.009} smoothness={3} />
       </mesh>
-      <mesh material={mats.dark} position={[0, 0.1, -0.03]}>
-        <boxGeometry args={[0.05, 0.17, 0.03]} />
+      <mesh material={mats.dark} position={[0, 0.1, -0.05]}>
+        <boxGeometry args={[0.07, 0.18, 0.03]} />
       </mesh>
-      <mesh material={mats.main} position={[0, 0.33, 0]}>
-        <RoundedBoxGeometry args={[0.64, 0.4, 0.032]} radius={0.014} smoothness={3} />
-      </mesh>
-      <mesh material={mats.light} position={[0, 0.33, 0.0175]}>
-        <boxGeometry args={[0.58, 0.34, 0.004]} />
-      </mesh>
-      {/* the title bar of a window */}
-      <mesh material={mats.dark} position={[0, 0.4825, 0.0185]}>
-        <boxGeometry args={[0.58, 0.035, 0.004]} />
-      </mesh>
+      <group position={[0, 0.17 + h / 2, 0]}>
+        <mesh material={mats.main} position={[0, 0, -0.016]}>
+          <RoundedBoxGeometry args={[w, h, 0.032]} radius={0.014} smoothness={3} />
+        </mesh>
+        <Screen width={w - 0.03} height={h - 0.03} mats={mats} />
+        {/* a light on the chin */}
+        <mesh material={mats.light} position={[0, -h / 2 + 0.01, 0.002]}>
+          <boxGeometry args={[0.02, 0.006, 0.002]} />
+        </mesh>
+      </group>
     </group>
   );
 }
 
-// A wall across the lanes with a portal for each one, so requests visibly pass through it.
+// A wall across the lanes with a portal for each one, so requests visibly pass through
+// it, and the same panel of ports and lights on both of its faces.
 function Gateway({ part, mats }: FormProps) {
   const [t, h, l] = part.size;
-  const portal = { width: 0.4, height: 0.26 };
+  const portal = GATEWAY_PORTAL;
   const cuts = [-l / 2, ...LANES.flatMap((z) => [z - portal.width / 2, z + portal.width / 2]), l / 2];
   const piers = [0, 2, 4, 6].map((i) => ({ from: cuts[i], to: cuts[i + 1] }));
   const beam = h - portal.height;
+  const lid = 0.012;
   return (
     <group>
       {piers.map((p) => (
         <mesh key={p.from} material={mats.dark} position={[0, portal.height / 2, (p.from + p.to) / 2]}>
-          <boxGeometry args={[t - 0.04, portal.height, p.to - p.from]} />
+          <boxGeometry args={[t - 0.04, portal.height + 0.01, p.to - p.from]} />
         </mesh>
       ))}
       <mesh material={mats.main} position={[0, portal.height + beam / 2, 0]}>
-        <RoundedBoxGeometry args={[t, beam, l]} radius={0.022} smoothness={3} />
+        <RoundedBoxGeometry args={[t, beam, l]} radius={0.024} smoothness={3} />
       </mesh>
-      {/* both faces: a light strip over the portals and three slots above it */}
-      {[-1, 1].map((side) => (
-        <group key={side} position={[side * (t / 2 + 0.002), 0, 0]}>
-          <mesh material={mats.light} position={[0, portal.height + 0.075, 0]}>
-            <boxGeometry args={[0.008, 0.024, l - 0.3]} />
-          </mesh>
-          {[0, 1, 2].map((i) => (
-            <mesh key={i} material={mats.dark} position={[0, h - 0.11 - i * 0.075, 0]}>
-              <boxGeometry args={[0.008, 0.022, l - 0.5]} />
-            </mesh>
-          ))}
-        </group>
+      {[1, -1].map((side) => (
+        <mesh key={side} material={mats.decal("face")} rotation={[0, (side * Math.PI) / 2, 0]} position={[side * (t / 2 + 0.001), h / 2, 0]}>
+          <planeGeometry args={[l, h]} />
+        </mesh>
       ))}
-      <mesh material={mats.pale} position={[0, h + 0.002, 0]}>
-        <boxGeometry args={[t - 0.07, 0.008, l - 0.14]} />
+      {/* a pale cap with a run of vents along it */}
+      <mesh material={mats.pale} position={[0, h + lid / 2 - 0.004, 0]}>
+        <boxGeometry args={[t - 0.06, lid, l - 0.12]} />
       </mesh>
+      {Array.from({ length: 11 }, (_, i) => (
+        <mesh key={i} material={mats.dark} position={[0, h + lid - 0.003, -l / 2 + 0.3 + i * ((l - 0.6) / 10)]}>
+          <boxGeometry args={[t - 0.12, 0.004, 0.05]} />
+        </mesh>
+      ))}
     </group>
   );
 }
 
-// A server on a recessed plinth: three rack units on each long face, each with a light.
+// A server on a recessed plinth: drive bays and lights on both long faces, vents on
+// the short sides.
 function Service({ part, mats }: FormProps) {
   const [w, h, d] = part.size;
   const plinth = 0.05;
   const body = h - plinth - 0.012;
-  const rows = [0.2, 0.5, 0.8].map((f) => plinth + body * f);
+  const mid = plinth + body / 2;
   return (
     <group>
       <mesh material={mats.dark} position={[0, plinth / 2, 0]}>
         <boxGeometry args={[w - 0.1, plinth, d - 0.1]} />
       </mesh>
-      <mesh material={mats.main} position={[0, plinth + body / 2, 0]}>
+      <mesh material={mats.main} position={[0, mid, 0]}>
         <RoundedBoxGeometry args={[w, body, d]} radius={0.028} smoothness={3} />
       </mesh>
       <mesh material={mats.pale} position={[0, plinth + body + 0.004, 0]}>
         <RoundedBoxGeometry args={[w - 0.14, 0.014, d - 0.14]} radius={0.006} smoothness={2} />
       </mesh>
-      {[-1, 1].map((side) =>
-        rows.map((y) => (
-          <group key={`${side}:${y}`} position={[0, y, side * (d / 2 + 0.002)]}>
-            <mesh material={mats.dark} position={[-0.07, 0, 0]}>
-              <boxGeometry args={[w - 0.3, 0.018, 0.008]} />
-            </mesh>
-            <mesh material={mats.light} position={[w / 2 - 0.1, 0, 0]}>
-              <boxGeometry args={[0.05, 0.022, 0.008]} />
-            </mesh>
-          </group>
-        )),
-      )}
+      {[1, -1].map((side) => (
+        <mesh key={`front${side}`} material={mats.decal("front")} rotation={[0, side > 0 ? 0 : Math.PI, 0]} position={[0, mid, side * (d / 2 + 0.001)]}>
+          <planeGeometry args={[w - 0.06, body - 0.05]} />
+        </mesh>
+      ))}
+      {[1, -1].map((side) => (
+        <mesh key={`side${side}`} material={mats.decal("side")} rotation={[0, (side * Math.PI) / 2, 0]} position={[side * (w / 2 + 0.001), mid, 0]}>
+          <planeGeometry args={[d - 0.06, body - 0.05]} />
+        </mesh>
+      ))}
     </group>
   );
 }
