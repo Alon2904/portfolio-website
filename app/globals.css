@@ -29,6 +29,10 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* The hero scene's canvas reaches past its frame; it must never widen the page.
+       Set here and on the body: the browser hands the root's value to the viewport as
+       a weaker "hidden", and it is the body's own clip that keeps the page from panning. */
+    overflow-x: clip;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -38,6 +42,7 @@
   }
 
   body {
+    overflow-x: clip;
     background: var(--paper);
     color: var(--text);
     font-family: var(--font-sans);
@@ -75,15 +80,25 @@
 
 /* The 3D platform in the hero. */
 .platform-figure { width: 100%; }
-.platform-canvas { aspect-ratio: 4 / 3; width: 100%; }
+/* The frame the sheet is fitted to. The canvas inside it is larger than the frame and
+   never takes the pointer, so text next to the scene can still be selected. */
+.platform-canvas { position: relative; aspect-ratio: 4 / 3; width: 100%; }
+/* The scene fades in on its first drawn frame rather than popping onto the page. */
+.platform-canvas > div { opacity: 0; transition: opacity 500ms ease; }
+.platform-canvas[data-ready="true"] > div { opacity: 1; }
 .platform-canvas canvas { display: block; }
 .platform-labels {
-  display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; margin-top: 0.75rem;
+  position: relative; display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; margin-top: 0.75rem;
   font-size: 0.85rem; color: var(--muted); list-style: none; padding: 0;
 }
-.platform-labels li { opacity: 0.35; transition: opacity 400ms ease; }
+.platform-labels li { display: inline-flex; align-items: center; gap: 0.45rem; opacity: 0.35; transition: opacity 400ms ease; }
+/* Each name carries a chip in the colour of its part. */
+.platform-labels li::before {
+  content: ""; width: 0.56rem; height: 0.56rem; border-radius: 2px; background: var(--chip);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--chip) 72%, var(--ink));
+}
 .platform-labels li[data-landed="true"] { opacity: 1; color: var(--ink); }
-@media (max-width: 639px) { .platform-canvas { aspect-ratio: 1 / 1; } }
+@media (prefers-reduced-motion: reduce) { .platform-canvas > div, .platform-labels li { transition: none; } }
 
 /* Shared page edge and baseline for navigation, content and footer. */
 .site-shell { width: min(100%, 1248px); margin-inline: auto; padding-inline: 48px; }
