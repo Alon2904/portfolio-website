@@ -27,81 +27,119 @@ function Screen({ width, height, mats }: { width: number; height: number; mats: 
   );
 }
 
+// A person: a head and a torso in the client tone, no face or limbs. Seated or
+// standing at a device, they read as a user from every side, which the device alone
+// never does from behind.
+function Person({ mats, seated = false, scale = 1 }: { mats: PartMaterials; seated?: boolean; scale?: number }) {
+  const torso = seated ? 0.14 : 0.2;
+  return (
+    <group scale={scale}>
+      <mesh material={mats.main} position={[0, torso / 2 + 0.09, 0]}>
+        <capsuleGeometry args={[0.085, torso, 6, 16]} />
+      </mesh>
+      <mesh material={mats.pale} position={[0, torso + 0.09 + 0.085 + 0.07, 0]}>
+        <sphereGeometry args={[0.07, 24, 16]} />
+      </mesh>
+    </group>
+  );
+}
+
 function Laptop({ mats }: FormProps) {
-  const w = 0.62;
-  const d = 0.42;
-  const base = 0.034;
+  const w = 0.74;
+  const d = 0.5;
+  const base = 0.036;
   return (
     <group>
       <mesh material={mats.main} position={[0, base / 2, 0.02]}>
         <RoundedBoxGeometry args={[w, base, d]} radius={0.012} smoothness={3} />
       </mesh>
       {/* the keyboard, and the trackpad in front of it */}
-      <mesh material={mats.decal("keys")} rotation={[-Math.PI / 2, 0, 0]} position={[0, base + 0.001, -0.045]}>
+      <mesh material={mats.decal("keys")} rotation={[-Math.PI / 2, 0, 0]} position={[0, base + 0.001, -0.055]}>
         <planeGeometry args={[w * 0.84, d * 0.5]} />
       </mesh>
-      <mesh material={mats.dark} position={[0, base + 0.001, 0.145]}>
-        <boxGeometry args={[0.2, 0.002, 0.11]} />
+      <mesh material={mats.dark} position={[0, base + 0.001, 0.17]}>
+        <boxGeometry args={[0.24, 0.002, 0.13]} />
       </mesh>
-      {/* the lid, open and leaning back, with the screen on its inner face */}
-      <group position={[0, base, -0.185]} rotation={[-0.3, 0, 0]}>
-        <mesh material={mats.main} position={[0, 0.2, -0.012]}>
-          <RoundedBoxGeometry args={[w, 0.4, 0.024]} radius={0.01} smoothness={3} />
+      {/* the lid, open and leaning back, with the screen on its inner face and a lit mark on its back */}
+      <group position={[0, base, -0.22]} rotation={[-0.3, 0, 0]}>
+        <mesh material={mats.main} position={[0, 0.24, -0.012]}>
+          <RoundedBoxGeometry args={[w, 0.48, 0.024]} radius={0.01} smoothness={3} />
         </mesh>
-        <group position={[0, 0.2, 0]}>
-          <Screen width={w - 0.03} height={0.37} mats={mats} />
+        <group position={[0, 0.24, 0]}>
+          <Screen width={w - 0.03} height={0.45} mats={mats} />
         </group>
+        <mesh material={mats.light} position={[0, 0.24, -0.0255]}>
+          <cylinderGeometry args={[0.035, 0.035, 0.003, 24]} />
+        </mesh>
+      </group>
+      {/* the person sits behind the laptop, a little to one side so they show from the front too */}
+      <group position={[0.2, 0, -0.5]}>
+        <Person mats={mats} seated />
       </group>
     </group>
   );
 }
 
 function Phone({ mats }: FormProps) {
-  const w = 0.26;
-  const h = 0.5;
-  const t = 0.03;
+  const w = 0.3;
+  const h = 0.58;
+  const t = 0.032;
   return (
     <group>
       {/* a small stand holds the phone up, leaning back a little */}
       <mesh material={mats.dark} position={[0, 0.02, 0.02]}>
-        <RoundedBoxGeometry args={[0.2, 0.04, 0.16]} radius={0.012} smoothness={3} />
+        <RoundedBoxGeometry args={[0.24, 0.04, 0.18]} radius={0.012} smoothness={3} />
       </mesh>
       <group position={[0, 0.03, 0.03]} rotation={[-0.2, 0, 0]}>
         <mesh material={mats.main} position={[0, h / 2, -t / 2]}>
-          <RoundedBoxGeometry args={[w, h, t]} radius={0.028} smoothness={4} />
+          <RoundedBoxGeometry args={[w, h, t]} radius={0.03} smoothness={4} />
         </mesh>
         <group position={[0, h / 2, 0]}>
-          <Screen width={w - 0.024} height={h - 0.024} mats={mats} />
+          <Screen width={w - 0.026} height={h - 0.026} mats={mats} />
         </group>
-        {/* the camera notch */}
-        <mesh material={mats.dark} position={[0, h - 0.028, 0.004]}>
-          <boxGeometry args={[0.07, 0.012, 0.002]} />
+        {/* the camera notch, and the camera on the back */}
+        <mesh material={mats.dark} position={[0, h - 0.03, 0.004]}>
+          <boxGeometry args={[0.08, 0.013, 0.002]} />
         </mesh>
+        <mesh material={mats.dark} position={[-0.08, h - 0.08, -t - 0.001]}>
+          <boxGeometry args={[0.07, 0.07, 0.004]} />
+        </mesh>
+      </group>
+      {/* the person stands behind the phone, a little to one side */}
+      <group position={[0.14, 0, -0.26]}>
+        <Person mats={mats} />
       </group>
     </group>
   );
 }
 
 function Monitor({ mats }: FormProps) {
-  const w = 0.66;
-  const h = 0.4;
+  const w = 0.8;
+  const h = 0.48;
   return (
     <group>
       <mesh material={mats.main} position={[0, 0.011, -0.02]}>
-        <RoundedBoxGeometry args={[0.3, 0.022, 0.2]} radius={0.009} smoothness={3} />
+        <RoundedBoxGeometry args={[0.36, 0.022, 0.24]} radius={0.009} smoothness={3} />
       </mesh>
       <mesh material={mats.dark} position={[0, 0.1, -0.05]}>
-        <boxGeometry args={[0.07, 0.18, 0.03]} />
+        <boxGeometry args={[0.08, 0.18, 0.03]} />
       </mesh>
       <group position={[0, 0.17 + h / 2, 0]}>
         <mesh material={mats.main} position={[0, 0, -0.016]}>
           <RoundedBoxGeometry args={[w, h, 0.032]} radius={0.014} smoothness={3} />
         </mesh>
         <Screen width={w - 0.03} height={h - 0.03} mats={mats} />
-        {/* a light on the chin */}
+        {/* a light on the chin, and a light bar across the back */}
         <mesh material={mats.light} position={[0, -h / 2 + 0.01, 0.002]}>
           <boxGeometry args={[0.02, 0.006, 0.002]} />
         </mesh>
+        <mesh material={mats.light} position={[0, 0.02, -0.0335]}>
+          <boxGeometry args={[w * 0.5, 0.012, 0.003]} />
+        </mesh>
+      </group>
+      {/* the person stands behind the monitor, a little to one side so they show from the front too */}
+      <group position={[0.26, 0, -0.4]}>
+        <Person mats={mats} />
       </group>
     </group>
   );
@@ -267,10 +305,11 @@ function Database({ part, mats }: FormProps) {
   );
 }
 
-// A block of eight bricks. One of them is always just being put away.
+// A block of eight bricks, each a cartridge with its face on the sides that show. One
+// of them is always just being put away.
 function Storage({ part, mats }: FormProps) {
   const [w, h, d] = part.size;
-  const lifted = useRef<THREE.Mesh>(null);
+  const lifted = useRef<THREE.Group>(null);
   const gap = 0.045;
   const bw = (w - gap) / 2;
   const bh = (h - gap) / 2;
@@ -282,6 +321,7 @@ function Storage({ part, mats }: FormProps) {
   });
 
   const bricks = [0, 1].flatMap((bx) => [0, 1].flatMap((by) => [0, 1].map((bz) => [bx, by, bz] as const)));
+  const face = mats.decal("brick");
   return (
     <group>
       <mesh material={mats.dark} position={[0, h / 2, 0]}>
@@ -289,15 +329,24 @@ function Storage({ part, mats }: FormProps) {
       </mesh>
       {bricks.map(([bx, by, bz]) => {
         const isLifted = bx === 1 && by === 1 && bz === 1;
+        const sx = bx ? 1 : -1;
+        const sz = bz ? 1 : -1;
         return (
-          <mesh
+          <group
             key={`${bx}${by}${bz}`}
             ref={isLifted ? lifted : undefined}
-            material={isLifted ? mats.pale : mats.main}
             position={[(bx - 0.5) * (bw + gap), bh / 2 + by * (bh + gap), (bz - 0.5) * (bd + gap)]}
           >
-            <RoundedBoxGeometry args={[bw, bh, bd]} radius={0.026} smoothness={3} />
-          </mesh>
+            <mesh material={isLifted ? mats.pale : mats.main}>
+              <RoundedBoxGeometry args={[bw, bh, bd]} radius={0.026} smoothness={3} />
+            </mesh>
+            <mesh material={face} rotation={[0, (sx * Math.PI) / 2, 0]} position={[sx * (bw / 2 + 0.001), 0, 0]}>
+              <planeGeometry args={[bd - 0.04, bh - 0.04]} />
+            </mesh>
+            <mesh material={face} rotation={[0, sz > 0 ? 0 : Math.PI, 0]} position={[0, 0, sz * (bd / 2 + 0.001)]}>
+              <planeGeometry args={[bw - 0.04, bh - 0.04]} />
+            </mesh>
+          </group>
         );
       })}
     </group>

@@ -36,9 +36,9 @@ export const TINT = {
 
 export const PARTS: Part[] = [
   { id: "board", label: "Cloud", kind: "board", at: [0, 0], size: [BOARD.width, BOARD.thickness, BOARD.depth], tint: TINT.board, order: 0 },
-  { id: "client-1", label: "Clients", kind: "laptop", at: [COLUMN.client, LANES[0]], size: [0.62, 0.42, 0.5], tint: TINT.client, order: 1, yaw: 0.6 },
-  { id: "client-2", label: "Clients", kind: "phone", at: [COLUMN.client, LANES[1]], size: [0.3, 0.46, 0.34], tint: TINT.client, order: 1, yaw: 0.45 },
-  { id: "client-3", label: "Clients", kind: "monitor", at: [COLUMN.client, LANES[2]], size: [0.66, 0.54, 0.3], tint: TINT.client, order: 1, yaw: 0.35 },
+  { id: "client-1", label: "Clients", kind: "laptop", at: [COLUMN.client, LANES[0]], size: [0.74, 0.5, 0.86], tint: TINT.client, order: 1, yaw: 0.6 },
+  { id: "client-2", label: "Clients", kind: "phone", at: [COLUMN.client, LANES[1]], size: [0.36, 0.62, 0.6], tint: TINT.client, order: 1, yaw: 0.45 },
+  { id: "client-3", label: "Clients", kind: "monitor", at: [COLUMN.client, LANES[2]], size: [0.8, 0.66, 0.7], tint: TINT.client, order: 1, yaw: 0.35 },
   { id: "gateway", label: "Gateway", kind: "gateway", at: [COLUMN.gate, 0], size: [0.26, 0.74, 3.24], tint: TINT.gateway, order: 2 },
   { id: "service-1", label: "Services", kind: "service", at: [COLUMN.service, LANES[0]], size: [0.92, 0.5, 0.7], tint: TINT.service, order: 3 },
   { id: "service-2", label: "Services", kind: "service", at: [COLUMN.service, LANES[1]], size: [0.92, 0.5, 0.7], tint: TINT.service, order: 3 },

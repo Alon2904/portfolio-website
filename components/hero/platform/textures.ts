@@ -113,12 +113,23 @@ function decal(key: string, width: number, height: number, draw: (ctx: CanvasRen
 const noise = (i: number) => Math.abs(Math.sin(i * 12.9898 + 4.1337)) % 1;
 
 const DARK = "rgba(8, 10, 18, 0.5)";
-const EDGE = "rgba(255, 255, 255, 0.16)";
+const EDGE = "rgba(255, 255, 255, 0.3)";
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   ctx.beginPath();
   ctx.roundRect(x, y, w, h, r);
   ctx.fill();
+}
+
+// A dark recess with a light edge, so it still reads on a face that is in shadow.
+function recess(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.fillStyle = DARK;
+  roundRect(ctx, x, y, w, h, r);
+  ctx.strokeStyle = EDGE;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(x + 0.75, y + 0.75, w - 1.5, h - 1.5, r);
+  ctx.stroke();
 }
 
 // What a screen shows: a terminal with a few commands and their output.
@@ -222,10 +233,13 @@ export function serverFaceTexture() {
   return decal("server-face", 256, 128, (ctx) => {
     for (let bay = 0; bay < 3; bay++) {
       const y = 10 + bay * 38;
-      ctx.fillStyle = DARK;
-      roundRect(ctx, 10, y, 236, 30, 3);
-      ctx.fillStyle = "rgba(5, 6, 12, 0.6)";
-      for (let x = 20; x < 170; x += 7) ctx.fillRect(x, y + 6, 3, 18);
+      recess(ctx, 10, y, 236, 30, 3);
+      for (let x = 20; x < 170; x += 7) {
+        ctx.fillStyle = "rgba(5, 6, 12, 0.6)";
+        ctx.fillRect(x, y + 6, 3, 18);
+        ctx.fillStyle = EDGE;
+        ctx.fillRect(x + 3, y + 6, 1, 18);
+      }
       ctx.fillStyle = EDGE;
       roundRect(ctx, 178, y + 9, 26, 12, 3);
       ctx.fillStyle = noise(bay + 7) > 0.35 ? "#c8ffd8" : "#ffd27a";
@@ -236,15 +250,41 @@ export function serverFaceTexture() {
   });
 }
 
-// A server's short side: vent slits and a small label plate.
+// A server's short side: a vent grille, a handle plate and a status light.
 export function serverSideTexture() {
   return decal("server-side", 192, 128, (ctx) => {
-    ctx.fillStyle = "rgba(5, 6, 12, 0.55)";
-    for (let y = 14; y < 118; y += 10) roundRect(ctx, 16, y, 128, 4, 2);
-    ctx.fillStyle = EDGE;
-    roundRect(ctx, 154, 18, 24, 34, 3);
+    recess(ctx, 10, 10, 136, 108, 3);
+    for (let y = 20; y < 110; y += 10) {
+      ctx.fillStyle = "rgba(5, 6, 12, 0.55)";
+      roundRect(ctx, 18, y, 120, 4, 2);
+      ctx.fillStyle = EDGE;
+      roundRect(ctx, 18, y + 4, 120, 1, 0);
+    }
+    recess(ctx, 154, 14, 28, 44, 3);
     ctx.fillStyle = "#c8ffd8";
-    roundRect(ctx, 162, 70, 8, 8, 4);
+    roundRect(ctx, 164, 72, 8, 8, 4);
+    ctx.fillStyle = "#ffd27a";
+    roundRect(ctx, 164, 88, 8, 8, 4);
+  });
+}
+
+// A storage brick's face: a cartridge with a label strip, a handle and a light.
+export function storageFaceTexture() {
+  return decal("storage-face", 128, 128, (ctx) => {
+    recess(ctx, 10, 10, 108, 108, 5);
+    ctx.fillStyle = "rgba(235, 245, 235, 0.55)";
+    roundRect(ctx, 20, 22, 70, 12, 3);
+    ctx.fillStyle = "rgba(5, 6, 12, 0.5)";
+    roundRect(ctx, 24, 26, 40, 4, 2);
+    recess(ctx, 20, 48, 88, 22, 4);
+    ctx.fillStyle = EDGE;
+    roundRect(ctx, 44, 55, 40, 8, 4);
+    for (let y = 82; y < 110; y += 8) {
+      ctx.fillStyle = "rgba(5, 6, 12, 0.5)";
+      roundRect(ctx, 20, y, 60, 3, 1);
+    }
+    ctx.fillStyle = "#c8ffd8";
+    roundRect(ctx, 96, 24, 9, 9, 4);
   });
 }
 
@@ -267,8 +307,7 @@ export function gatewayFaceTexture(lanes: number[], length: number, height: numb
       roundRect(ctx, 12, y, w - 24, rowH - 8, 4);
       for (let c = 0; c < cols; c++) {
         const x = 12 + c * colW;
-        ctx.fillStyle = DARK;
-        roundRect(ctx, x + 4, y + 5, colW - 8, rowH - 18, 3);
+        recess(ctx, x + 4, y + 5, colW - 8, rowH - 18, 3);
         const lit = noise(r * 97 + c * 13) > 0.55;
         ctx.fillStyle = lit ? (noise(r + c * 3) > 0.5 ? "#e9ddff" : "#c8ffd8") : "rgba(5, 6, 12, 0.5)";
         roundRect(ctx, x + colW / 2 - 5, y + rowH / 2 - 7, 10, 7, 3);

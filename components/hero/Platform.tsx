@@ -227,6 +227,8 @@ export function Platform() {
           <Rig />
           <ambientLight intensity={0.3} />
           <directionalLight position={[5, 9, 7]} intensity={1.3} />
+          {/* the sheet turns, so a fill from behind keeps the faces away from the key light readable */}
+          <directionalLight position={[-6, 7, -7]} intensity={0.7} color="#dde8ff" />
           <Studio />
           <Scene animate={!reduced} go={go} onProgress={setLanded} />
           <Effects occlusion={!lean} />

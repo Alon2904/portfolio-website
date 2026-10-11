@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { GATEWAY_PORTAL, LANES, type Part, type PartKind } from "./layout";
-import { gatewayFaceTexture, keysTexture, screenTexture, serverFaceTexture, serverSideTexture, terminalTexture } from "./textures";
+import { gatewayFaceTexture, keysTexture, screenTexture, serverFaceTexture, serverSideTexture, storageFaceTexture, terminalTexture } from "./textures";
 
 export function shade(hex: string, amount: number) {
   const c = new THREE.Color(hex);
@@ -20,6 +20,8 @@ function decalTextures(part: Part): Record<string, THREE.Texture> {
       return { front: serverFaceTexture(), side: serverSideTexture() };
     case "laptop":
       return { keys: keysTexture() };
+    case "storage":
+      return { brick: storageFaceTexture() };
     default:
       return {};
   }
@@ -93,7 +95,7 @@ export class PartMaterials {
     this.pale.emissiveIntensity = energy * 1.5;
     this.dark.emissiveIntensity = energy * 1.1;
     this.light.emissiveIntensity = this.lightBase + energy * 2 + activity * this.lightBoost;
-    for (const m of Object.values(this.decals)) m.emissiveIntensity = 0.75 + energy * 1.5 + activity * 1.6;
+    for (const m of Object.values(this.decals)) m.emissiveIntensity = 0.6 + energy * 1.5 + activity * 1.6;
   }
 
   dispose() {
