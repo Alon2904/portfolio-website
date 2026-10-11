@@ -16,9 +16,13 @@ test("every work page renders its title", async ({ page }) => {
   }
 });
 
-test("an unknown work page is a 404", async ({ page }) => {
-  const res = await page.goto("/work/nothing-here");
-  expect(res?.status()).toBe(404);
+// With cache components, an unknown slug renders on request and streams the not-found
+// page; the status is 200 but the page says so and carries noindex, which is what matters
+// to a visitor and to a search engine.
+test("an unknown work page shows the not-found page and is not indexed", async ({ page }) => {
+  await page.goto("/work/nothing-here");
+  await expect(page.getByRole("heading", { level: 1, name: "There is nothing at this address." })).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
 });
 
 test("the contact form has the fields Netlify expects", async ({ page }) => {

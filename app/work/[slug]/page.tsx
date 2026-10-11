@@ -8,6 +8,11 @@ export function generateStaticParams() {
   return caseStudies.map((c) => ({ slug: c.slug }));
 }
 
+// The slugs above are prerendered. Any other slug is rendered on request so that it can
+// answer 404; that render reads `params` outside a Suspense boundary, which cache
+// components only allow for a route marked as blocking.
+export const instant = false;
+
 export async function generateMetadata({ params }: PageProps<"/work/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const c = getCaseStudy(slug);
