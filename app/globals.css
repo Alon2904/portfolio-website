@@ -109,6 +109,19 @@
   100% { stroke-dashoffset: 1; opacity: 0; }
 }
 .platform-canvas canvas { display: block; }
+/* The two clips of the hero video sit on top of each other; only the active one shows. */
+.platform-clip { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; opacity: 0; }
+.platform-clip[data-active="true"] { opacity: 1; }
+/* The clips' background is the page colour, but video compression can shift it by a
+   level, so their edges fade into the page rather than ending in a line. */
+.platform-fade {
+  --fade: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+  --fade-y: linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
+  -webkit-mask-image: var(--fade), var(--fade-y);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--fade), var(--fade-y);
+  mask-composite: intersect;
+}
 .platform-labels {
   position: relative; display: flex; flex-wrap: wrap; gap: 0.35rem 1.1rem; margin-top: 0.75rem;
   font-size: 0.85rem; color: var(--muted); list-style: none; padding: 0;

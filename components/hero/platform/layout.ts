@@ -91,16 +91,27 @@ export const VIEW = {
   bleed: 0.2,
 } as const;
 
+// The running system repeats itself exactly every LOOP_SECONDS: one full turn of the
+// sheet, and every other idle motion a whole number of cycles in that time. That is what
+// lets one loop of it be rendered to a video that joins to itself. `cycle(k)` is the
+// angular speed of a motion that completes k cycles per loop.
+export const LOOP_SECONDS = 60;
+export function cycle(k: number): number {
+  return (2 * Math.PI * k) / LOOP_SECONDS;
+}
+
 // How the finished system moves, for as long as the page is open. `t` is the number of
 // seconds since the system started running; it is negative while the parts assemble, so
 // the same motion carries the sheet through the build and into the hero angle at t = 0.
 //
-// This one function is the feel of the piece. A constant slow turn (below) shows every
-// side like a product on a turntable. The alternative is a sway that never leaves the
-// composed angle: VIEW.heroYaw + 0.32 * Math.sin(t * 0.22).
+// This one function is the feel of the piece: a constant slow turn, one revolution per
+// loop, showing every side like a product on a turntable.
 export function idleYaw(t: number): number {
-  return VIEW.heroYaw + t * 0.075;
+  return VIEW.heroYaw + t * cycle(1);
 }
+
+// When the build is over and every transient has settled, so the loop can start here.
+export const LOOP_START = RUN_START + 1.9;
 
 // Routes. A request leaves a client, passes the gateway, may switch lane on the first
 // bus, reaches a service, and ends at the AI service, the database or the storage.

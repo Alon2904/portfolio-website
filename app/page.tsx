@@ -7,6 +7,7 @@ import Link from "next/link";
 const hasPhoto = existsSync(join(process.cwd(), "public", "alon.jpg"));
 import { site } from "@/content/site";
 import { hero, clients, work, howIWork, aiBuilds, about, contact } from "@/content/home";
+import { HeroVideo } from "@/components/hero/HeroVideo";
 import { PlatformLoader } from "@/components/hero/PlatformLoader";
 import { ContactForm } from "@/components/ContactForm";
 
@@ -39,7 +40,8 @@ export default function Home() {
           <p className="home-heroSub">{hero.sub}</p>
         </div>
         <div className="home-diagram">
-          <PlatformLoader />
+          {/* the scene plays as video; the live scene behind it only renders in capture mode */}
+          <HeroVideo live={<PlatformLoader />} />
         </div>
       </section>
 

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { RoundedBoxGeometry } from "@react-three/drei";
 import * as THREE from "three";
-import { GATEWAY_PORTAL, LANES, type Part } from "./layout";
+import { GATEWAY_PORTAL, LANES, cycle, type Part } from "./layout";
 import type { PartMaterials } from "./materials";
 import { circle, raise } from "./shapes";
 import type { Signals } from "./state";
@@ -225,13 +225,14 @@ function AiService({ part, mats, signals }: FormProps) {
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime;
+    // every speed is a whole number of cycles per loop (see `cycle` in layout.ts)
     if (core.current) {
-      core.current.rotation.set(t * 0.35, t * 0.55, 0);
-      core.current.position.y = centre + Math.sin(t * 1.3) * 0.018;
+      core.current.rotation.set(t * cycle(3), t * cycle(5), 0);
+      core.current.position.y = centre + Math.sin(t * cycle(12)) * 0.018;
     }
-    if (ringA.current) ringA.current.rotation.set(Math.PI / 2 + Math.sin(t * 0.5) * 0.5, t * 0.7, 0);
-    if (ringB.current) ringB.current.rotation.set(t * 0.45, 0, Math.PI / 3 + t * 0.3);
-    if (coreMat.current) coreMat.current.emissiveIntensity = 2.3 + Math.sin(t * 1.7) * 0.35 + signals.level(part.id) * 1.8;
+    if (ringA.current) ringA.current.rotation.set(Math.PI / 2 + Math.sin(t * cycle(5)) * 0.5, t * cycle(7), 0);
+    if (ringB.current) ringB.current.rotation.set(t * cycle(4), 0, Math.PI / 3 + t * cycle(3));
+    if (coreMat.current) coreMat.current.emissiveIntensity = 2.3 + Math.sin(t * cycle(16)) * 0.35 + signals.level(part.id) * 1.8;
   });
 
   const bar = 0.034;
@@ -317,7 +318,7 @@ function Storage({ part, mats }: FormProps) {
   const topY = bh + gap + bh / 2;
 
   useFrame(({ clock }) => {
-    if (lifted.current) lifted.current.position.y = topY + 0.045 + Math.sin(clock.elapsedTime * 1.1) * 0.025;
+    if (lifted.current) lifted.current.position.y = topY + 0.045 + Math.sin(clock.elapsedTime * cycle(10)) * 0.025;
   });
 
   const bricks = [0, 1].flatMap((bx) => [0, 1].flatMap((by) => [0, 1].map((bz) => [bx, by, bz] as const)));

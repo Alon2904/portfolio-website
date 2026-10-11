@@ -9,7 +9,7 @@ import * as THREE from "three";
 import { Requests, Wiring } from "./platform/Flow";
 import { Legend } from "./platform/Legend";
 import { Placeholder } from "./platform/Placeholder";
-import { BOARD, LAST_ORDER, PARTS, VIEW, idleYaw, smoothstep } from "./platform/layout";
+import { BOARD, LAST_ORDER, PARTS, VIEW, cycle, idleYaw, smoothstep } from "./platform/layout";
 import { Board, Grounding, PageShadow, PartMesh, PlanOutline } from "./platform/Stage";
 import { Signals, Timeline } from "./platform/state";
 
@@ -22,9 +22,9 @@ import { Signals, Timeline } from "./platform/state";
 
 const BOARD_INDEX = PARTS.findIndex((p) => p.kind === "board");
 
-type SceneProps = { animate: boolean; go: { current: boolean }; onProgress: (landed: number) => void };
+type SceneProps = { animate: boolean; manual: boolean; go: { current: boolean }; onProgress: (landed: number) => void };
 
-const Scene = memo(function Scene({ animate, go, onProgress }: SceneProps) {
+const Scene = memo(function Scene({ animate, manual, go, onProgress }: SceneProps) {
   const rotator = useRef<THREE.Group>(null);
   const floater = useRef<THREE.Group>(null);
   const timeline = useMemo(() => new Timeline(animate), [animate]);
@@ -35,10 +35,12 @@ const Scene = memo(function Scene({ animate, go, onProgress }: SceneProps) {
   // Runs ahead of every other frame callback, so each part reads this frame's numbers.
   // Time is counted here rather than read from the clock: the clock restarts whenever the
   // scene is paused off screen, and the build must only ever play once.
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     // The build waits for the go: the scene draws a few frames first, out of sight, so
     // the shaders are compiled and the first second of the build is not lost to them.
-    if (go.current) elapsed.current += Math.min(delta, 0.1);
+    // In capture mode the clock is stepped by the render script and is the time.
+    if (manual) elapsed.current = state.clock.elapsedTime;
+    else if (go.current) elapsed.current += Math.min(delta, 0.1);
     timeline.update(elapsed.current);
     signals.decay(delta);
     if (reported.current !== timeline.landed) {
@@ -46,7 +48,7 @@ const Scene = memo(function Scene({ animate, go, onProgress }: SceneProps) {
       onProgress(timeline.landed);
     }
     if (rotator.current) rotator.current.rotation.y = animate ? idleYaw(timeline.run) : VIEW.heroYaw;
-    if (floater.current) floater.current.position.y = animate ? Math.sin(elapsed.current * 0.55) * 0.045 * smoothstep(-1.5, 1, timeline.run) : 0;
+    if (floater.current) floater.current.position.y = animate ? Math.sin(timeline.run * cycle(5)) * 0.045 * smoothstep(-1.5, 1, timeline.run) : 0;
   }, -1);
 
   return (
@@ -164,6 +166,30 @@ function Warmup({ onReady }: { onReady: () => void }) {
   return null;
 }
 
+// Capture mode (`?capture=1`): the frame loop is manual and the page steps it. The render
+// script calls `window.__heroStep(seconds)` once per video frame, so every frame is drawn
+// at an exact time whatever the machine is doing. See scripts/render-hero.mjs.
+declare global {
+  interface Window {
+    __heroStep?: (seconds: number) => void;
+  }
+}
+
+function CaptureBridge() {
+  const advance = useThree((s) => s.advance);
+  useEffect(() => {
+    window.__heroStep = (seconds) => advance(seconds, true);
+    return () => {
+      delete window.__heroStep;
+    };
+  }, [advance]);
+  return null;
+}
+
+function isCaptureMode() {
+  return typeof window !== "undefined" && new URLSearchParams(window.location.search).get("capture") === "1";
+}
+
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
 function subscribeToReducedMotion(onChange: () => void) {
@@ -181,15 +207,16 @@ function usePrefersReducedMotion() {
 }
 
 export function Platform() {
-  const reduced = usePrefersReducedMotion();
+  const capture = useMemo(() => isCaptureMode(), []);
+  const reduced = usePrefersReducedMotion() && !capture;
   const [landed, setLanded] = useState(0);
   const [visible, setVisible] = useState(true);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(capture);
   const [settled, setSettled] = useState(false);
   const [lean, setLean] = useState(false); // a lighter render, once the frame rate has dropped
   const [frameWidth, setFrameWidth] = useState(0);
   const holder = useRef<HTMLDivElement>(null);
-  const go = useRef(false);
+  const go = useRef(capture);
 
   useEffect(() => {
     const el = holder.current;
@@ -210,8 +237,8 @@ export function Platform() {
     const id = window.setTimeout(() => setSettled(true), 1500);
     return () => window.clearTimeout(id);
   }, [ready]);
-  const frameloop = !visible && ready ? "never" : reduced && settled ? "demand" : "always";
-  const pixelRatio = lean ? Math.min(1.25, budgetedPixelRatio(frameWidth)) : budgetedPixelRatio(frameWidth);
+  const frameloop = capture ? "never" : !visible && ready ? "never" : reduced && settled ? "demand" : "always";
+  const pixelRatio = capture ? 2 : lean ? Math.min(1.25, budgetedPixelRatio(frameWidth)) : budgetedPixelRatio(frameWidth);
 
   return (
     <figure ref={holder} className="platform-figure" aria-label="A cloud architecture drawn as a plan, then built, then running">
@@ -230,15 +257,21 @@ export function Platform() {
           {/* the sheet turns, so a fill from behind keeps the faces away from the key light readable */}
           <directionalLight position={[-6, 7, -7]} intensity={0.7} color="#dde8ff" />
           <Studio />
-          <Scene animate={!reduced} go={go} onProgress={setLanded} />
+          <Scene animate={!reduced} manual={capture} go={go} onProgress={setLanded} />
           <Effects occlusion={!lean} />
-          <PerformanceMonitor onDecline={() => setLean(true)} />
-          <Warmup
-            onReady={() => {
-              go.current = true;
-              setReady(true);
-            }}
-          />
+          {capture ? (
+            <CaptureBridge />
+          ) : (
+            <>
+              <PerformanceMonitor onDecline={() => setLean(true)} />
+              <Warmup
+                onReady={() => {
+                  go.current = true;
+                  setReady(true);
+                }}
+              />
+            </>
+          )}
         </Canvas>
       </div>
       <Legend landed={reduced ? LAST_ORDER : landed} />
