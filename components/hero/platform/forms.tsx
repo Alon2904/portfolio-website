@@ -72,8 +72,8 @@ function Laptop({ mats }: FormProps) {
           <cylinderGeometry args={[0.035, 0.035, 0.003, 24]} />
         </mesh>
       </group>
-      {/* the person sits behind the laptop, a little to one side so they show from the front too */}
-      <group position={[0.2, 0, -0.5]}>
+      {/* the person sits in front of the laptop, facing its screen, a little to one side of it */}
+      <group position={[0.26, 0, 0.46]}>
         <Person mats={mats} seated />
       </group>
     </group>
@@ -105,8 +105,8 @@ function Phone({ mats }: FormProps) {
           <boxGeometry args={[0.07, 0.07, 0.004]} />
         </mesh>
       </group>
-      {/* the person stands behind the phone, a little to one side */}
-      <group position={[0.14, 0, -0.26]}>
+      {/* the person stands in front of the phone, a little to one side of it */}
+      <group position={[0.18, 0, 0.32]}>
         <Person mats={mats} />
       </group>
     </group>
@@ -137,9 +137,9 @@ function Monitor({ mats }: FormProps) {
           <boxGeometry args={[w * 0.5, 0.012, 0.003]} />
         </mesh>
       </group>
-      {/* the person stands behind the monitor, a little to one side so they show from the front too */}
-      <group position={[0.26, 0, -0.4]}>
-        <Person mats={mats} />
+      {/* the person sits in front of the monitor, facing it, a little to one side of it */}
+      <group position={[0.3, 0, 0.44]}>
+        <Person mats={mats} seated />
       </group>
     </group>
   );
