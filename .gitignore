@@ -42,3 +42,6 @@ next-env.d.ts
 
 # playwright
 /test-results
+
+# netlify cli link
+.netlify/
