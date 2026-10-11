@@ -15,8 +15,16 @@ export default async (request, context) => {
   const country = override ? override.toUpperCase() : context.geo?.country?.code;
   if (country !== "IL") return context.next();
 
+  // The path and query are copied onto a URL whose host is fixed. Building it from the
+  // path instead (new URL(path, base)) would let a path like //other.host/... change the
+  // host, and the function would then fetch and serve someone else's content as ours.
   const url = new URL(request.url);
-  const target = new URL(url.pathname + url.search, NEW_SITE);
+  const target = new URL(NEW_SITE);
+  target.pathname = url.pathname;
+  target.search = url.search;
+  if (target.host !== new URL(NEW_SITE).host || url.pathname.startsWith("//")) {
+    return new Response("Not found", { status: 404 });
+  }
   const headers = new Headers(request.headers);
   headers.set("host", target.host);
   headers.delete("cookie");
