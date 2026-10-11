@@ -20,9 +20,10 @@ test("every work page renders its title", async ({ page }) => {
 // page; the status is 200 but the page says so and carries noindex, which is what matters
 // to a visitor and to a search engine.
 test("an unknown work page shows the not-found page and is not indexed", async ({ page }) => {
+  const res = await page.request.get("/work/nothing-here");
+  expect(await res.text()).toContain('<meta name="robots" content="noindex"');
   await page.goto("/work/nothing-here");
   await expect(page.getByRole("heading", { level: 1, name: "There is nothing at this address." })).toBeVisible();
-  await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(1);
 });
 
 test("the contact form has the fields Netlify expects", async ({ page }) => {
