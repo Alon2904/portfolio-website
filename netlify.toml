@@ -1,0 +1,10 @@
+# Temporary, until the move: visitors in Israel see the new site, everyone else the
+# current one. The country is decided at Netlify's edge, so nothing else changes for
+# anyone outside Israel. The new site is the `v3` branch deploy of this same Netlify site.
+# Test from anywhere with the cookie nf_country=il.
+[[redirects]]
+  from = "/*"
+  to = "https://v3--alon-portolio-website.netlify.app/:splat"
+  status = 200
+  force = true
+  conditions = { Country = ["IL"] }
