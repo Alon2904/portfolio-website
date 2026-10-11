@@ -3,11 +3,12 @@
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer, PerformanceMonitor } from "@react-three/drei";
-import { Bloom, EffectComposer, N8AO, SMAA, ToneMapping } from "@react-three/postprocessing";
+import { Bloom, EffectComposer, FXAA, N8AO, ToneMapping } from "@react-three/postprocessing";
 import { ToneMappingMode } from "postprocessing";
 import * as THREE from "three";
 import { Requests, Wiring } from "./platform/Flow";
 import { Legend } from "./platform/Legend";
+import { Placeholder } from "./platform/Placeholder";
 import { BOARD, LAST_ORDER, PARTS, VIEW, idleYaw, smoothstep } from "./platform/layout";
 import { Board, Grounding, PageShadow, PartMesh, PlanOutline } from "./platform/Stage";
 import { Signals, Timeline } from "./platform/state";
@@ -21,9 +22,9 @@ import { Signals, Timeline } from "./platform/state";
 
 const BOARD_INDEX = PARTS.findIndex((p) => p.kind === "board");
 
-type SceneProps = { animate: boolean; onProgress: (landed: number) => void };
+type SceneProps = { animate: boolean; go: { current: boolean }; onProgress: (landed: number) => void };
 
-const Scene = memo(function Scene({ animate, onProgress }: SceneProps) {
+const Scene = memo(function Scene({ animate, go, onProgress }: SceneProps) {
   const rotator = useRef<THREE.Group>(null);
   const floater = useRef<THREE.Group>(null);
   const timeline = useMemo(() => new Timeline(animate), [animate]);
@@ -35,7 +36,9 @@ const Scene = memo(function Scene({ animate, onProgress }: SceneProps) {
   // Time is counted here rather than read from the clock: the clock restarts whenever the
   // scene is paused off screen, and the build must only ever play once.
   useFrame((_, delta) => {
-    elapsed.current += Math.min(delta, 0.1);
+    // The build waits for the go: the scene draws a few frames first, out of sight, so
+    // the shaders are compiled and the first second of the build is not lost to them.
+    if (go.current) elapsed.current += Math.min(delta, 0.1);
     timeline.update(elapsed.current);
     signals.decay(delta);
     if (reported.current !== timeline.landed) {
@@ -118,25 +121,45 @@ function Studio() {
 }
 
 // Ambient occlusion for the crevices, bloom for whatever is brighter than white (the
-// requests, the core, a part still forming), then tone mapping and SMAA. Tone mapping
-// has to be an effect here: the composer switches the renderer's own tone mapping off.
+// requests, the core, a part still forming), then tone mapping and anti-aliasing. Tone
+// mapping has to be an effect here: the composer switches the renderer's own tone
+// mapping off. FXAA rather than SMAA: SMAA ships 90 KB of lookup textures for an edge
+// quality that does not show at this pixel density.
 function Effects({ occlusion }: { occlusion: boolean }) {
   return (
     <EffectComposer multisampling={0} enableNormalPass={false}>
       <N8AO enabled={occlusion} halfRes aoRadius={0.5} intensity={2.6} distanceFalloff={0.8} quality="medium" />
       <Bloom luminanceThreshold={1} luminanceSmoothing={0.2} intensity={0.85} mipmapBlur radius={0.7} />
       <ToneMapping mode={ToneMappingMode.NEUTRAL} />
-      <SMAA />
+      <FXAA />
     </EffectComposer>
   );
 }
 
-function FirstFrame({ onReady }: { onReady: () => void }) {
-  const done = useRef(false);
+// Warm-up: every material's shader is compiled in parallel where the GPU allows it,
+// then two frames are drawn with the canvas still hidden (the effects compile their own
+// shaders on the first), and only then is the scene shown and the build started.
+function Warmup({ onReady }: { onReady: () => void }) {
+  const gl = useThree((s) => s.gl);
+  const scene = useThree((s) => s.scene);
+  const camera = useThree((s) => s.camera);
+  const compiled = useRef(false);
+  const frames = useRef(0);
+  useEffect(() => {
+    let live = true;
+    gl.compileAsync(scene, camera)
+      .catch(() => undefined)
+      .then(() => {
+        if (live) compiled.current = true;
+      });
+    return () => {
+      live = false;
+    };
+  }, [gl, scene, camera]);
   useFrame(() => {
-    if (done.current) return;
-    done.current = true;
-    onReady();
+    if (!compiled.current || frames.current > 2) return;
+    frames.current += 1;
+    if (frames.current === 2) onReady();
   });
   return null;
 }
@@ -166,6 +189,7 @@ export function Platform() {
   const [lean, setLean] = useState(false); // a lighter render, once the frame rate has dropped
   const [frameWidth, setFrameWidth] = useState(0);
   const holder = useRef<HTMLDivElement>(null);
+  const go = useRef(false);
 
   useEffect(() => {
     const el = holder.current;
@@ -182,15 +206,17 @@ export function Platform() {
 
   // With reduced motion the scene is a still: once it has drawn, it only redraws on demand.
   useEffect(() => {
+    if (!ready) return;
     const id = window.setTimeout(() => setSettled(true), 1500);
     return () => window.clearTimeout(id);
-  }, []);
-  const frameloop = !visible ? "never" : reduced && settled ? "demand" : "always";
+  }, [ready]);
+  const frameloop = !visible && ready ? "never" : reduced && settled ? "demand" : "always";
   const pixelRatio = lean ? Math.min(1.25, budgetedPixelRatio(frameWidth)) : budgetedPixelRatio(frameWidth);
 
   return (
     <figure ref={holder} className="platform-figure" aria-label="A cloud architecture drawn as a plan, then built, then running">
       <div className="platform-canvas" data-ready={ready}>
+        <Placeholder />
         <Canvas
           dpr={[1, pixelRatio]}
           frameloop={frameloop}
@@ -202,10 +228,15 @@ export function Platform() {
           <ambientLight intensity={0.3} />
           <directionalLight position={[5, 9, 7]} intensity={1.3} />
           <Studio />
-          <Scene animate={!reduced} onProgress={setLanded} />
+          <Scene animate={!reduced} go={go} onProgress={setLanded} />
           <Effects occlusion={!lean} />
           <PerformanceMonitor onDecline={() => setLean(true)} />
-          <FirstFrame onReady={() => setReady(true)} />
+          <Warmup
+            onReady={() => {
+              go.current = true;
+              setReady(true);
+            }}
+          />
         </Canvas>
       </div>
       <Legend landed={reduced ? LAST_ORDER : landed} />
