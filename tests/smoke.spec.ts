@@ -22,7 +22,7 @@ test("every work page renders its title", async ({ page }) => {
 test("an unknown work page shows the not-found page and is not indexed", async ({ page }) => {
   await page.goto("/work/nothing-here");
   await expect(page.getByRole("heading", { level: 1, name: "There is nothing at this address." })).toBeVisible();
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(1);
 });
 
 test("the contact form has the fields Netlify expects", async ({ page }) => {
