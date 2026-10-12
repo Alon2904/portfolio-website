@@ -9,7 +9,10 @@
 //                                 the first 1.5 s are cross-faded with the frames that
 //                                 follow the loop's end, so the requests in flight (the one
 //                                 thing that is not periodic) blend instead of jumping
-//   public/hero/still.jpg         the built platform, for reduced motion
+//   public/hero/intro-sm.mp4,     the same two clips at 720 wide, for phones
+//   public/hero/loop-sm.mp4
+//   public/hero/still.jpg         the built platform, for reduced motion and as the
+//                                 stand-in when the video will not play
 // Needs ffmpeg on the PATH and a dev or production server at baseUrl.
 import { chromium } from "@playwright/test";
 import { execFileSync } from "node:child_process";
@@ -27,6 +30,10 @@ const FADE = 1.5; // seconds of cross-fade at the loop seam
 // material at matching quality, so only H.264 is written.)
 const WIDTH = 1280;
 const HEIGHT = 960;
+// Phones show the hero under 400 CSS pixels wide, so 720 wide keeps about the same
+// density there at under half the bytes.
+const SMALL_WIDTH = 720;
+const SMALL_HEIGHT = 540;
 const out = "public/hero";
 const frames = "/tmp/hero-frames";
 
@@ -68,7 +75,9 @@ await browser.close();
 console.log(`captured ${total} frames in ${Math.round((Date.now() - started) / 1000)}s`);
 }
 
-const scale = `scale=${WIDTH}:${HEIGHT}:flags=lanczos:out_color_matrix=bt709`;
+const scaleTo = (w, h) => `scale=${w}:${h}:flags=lanczos:out_color_matrix=bt709`;
+const scale = scaleTo(WIDTH, HEIGHT);
+const smallScale = scaleTo(SMALL_WIDTH, SMALL_HEIGHT);
 const colour = ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"];
 const h264 = ["-c:v", "libx264", "-preset", "medium", "-crf", "28", "-pix_fmt", "yuv420p", "-movflags", "+faststart", ...colour];
 
@@ -79,19 +88,23 @@ function ffmpeg(args) {
 const input = (start, count) => ["-framerate", String(FPS), "-start_number", String(start), "-i", join(frames, "%05d.png"), "-frames:v", String(count)];
 
 // intro: frames [0, introFrames)
-ffmpeg([...input(0, introFrames), "-vf", scale, ...h264, join(out, "intro.mp4")]);
+for (const [vf, name] of [[scale, "intro.mp4"], [smallScale, "intro-sm.mp4"]]) {
+  ffmpeg([...input(0, introFrames), "-vf", vf, ...h264, join(out, name)]);
+}
 
 // loop: the continuation frames cross-fade into the loop's own first frames, then the
 // loop runs on. Output length is exactly LOOP_SECONDS.
 const loopStart = introFrames;
 const tailStart = introFrames + loopFrames;
-ffmpeg([
-  "-framerate", String(FPS), "-start_number", String(tailStart), "-i", join(frames, "%05d.png"),
-  "-framerate", String(FPS), "-start_number", String(loopStart), "-i", join(frames, "%05d.png"),
-  "-filter_complex",
-  `[0:v]trim=end_frame=${fadeFrames},setpts=PTS-STARTPTS[tail];[1:v]trim=end_frame=${loopFrames},setpts=PTS-STARTPTS[loop];[tail][loop]xfade=transition=fade:duration=${FADE}:offset=0,${scale}[v]`,
-  "-map", "[v]", ...h264, join(out, "loop.mp4"),
-]);
+for (const [vf, name] of [[scale, "loop.mp4"], [smallScale, "loop-sm.mp4"]]) {
+  ffmpeg([
+    "-framerate", String(FPS), "-start_number", String(tailStart), "-i", join(frames, "%05d.png"),
+    "-framerate", String(FPS), "-start_number", String(loopStart), "-i", join(frames, "%05d.png"),
+    "-filter_complex",
+    `[0:v]trim=end_frame=${fadeFrames},setpts=PTS-STARTPTS[tail];[1:v]trim=end_frame=${loopFrames},setpts=PTS-STARTPTS[loop];[tail][loop]xfade=transition=fade:duration=${FADE}:offset=0,${vf}[v]`,
+    "-map", "[v]", ...h264, join(out, name),
+  ]);
+}
 
 // still: the first loop frame
 ffmpeg(["-i", join(frames, `${String(loopStart).padStart(5, "0")}.png`), "-vf", scale, "-q:v", "3", join(out, "still.jpg")]);

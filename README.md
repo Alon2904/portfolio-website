@@ -12,9 +12,10 @@ The hero is a 3D scene (`components/hero/Platform.tsx` and `components/hero/plat
 
 - `public/hero/intro.mp4` is the build.
 - `public/hero/loop.mp4` is one full turn, which joins to itself.
-- `public/hero/still.jpg` is what a visitor with reduced motion sees.
+- `public/hero/intro-sm.mp4` and `loop-sm.mp4` are the same clips at 720 wide, for phones.
+- `public/hero/still.jpg` is what a visitor with reduced motion sees, and what stands in when the browser will not play the video (iOS in Low Power Mode) or the intro has not started within a few seconds.
 
-After any change to the scene, render it again and commit the three files:
+After any change to the scene, render it again and commit the five files:
 
     npm run dev            # in one terminal
     npm run render:hero    # in another; needs ffmpeg, takes about ten minutes
